@@ -1,6 +1,6 @@
 # Interrogation Protocol
 
-Phase 0 is the most important phase. Every token spent here saves 10x in Phase 2.
+Phase 0 is the most important phase. Every token spent here saves 10x in Phase 3 (the GitHub pipeline).
 
 ## Pre-Check: Prompt Quality Audit
 
