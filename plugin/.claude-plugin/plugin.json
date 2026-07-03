@@ -1,0 +1,10 @@
+{
+  "name": "mahler",
+  "version": "1.0.0",
+  "description": "Multi-model orchestrator that routes tasks to the optimal Claude model for maximum value at minimum token cost",
+  "author": {
+    "name": "Sinaida Krivchenko",
+    "url": "https://sinaida.eu"
+  },
+  "keywords": ["orchestrator", "multi-model", "pipeline", "creative-direction"]
+}
