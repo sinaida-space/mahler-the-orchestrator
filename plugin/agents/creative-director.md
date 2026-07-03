@@ -46,7 +46,8 @@ Assign each subtask a model using this table:
 
 ### 4. Output Format
 
-Return your plan as a structured list. Example:
+Your output feeds directly into GitHub issues. Each task becomes one issue.
+Return your plan as a structured list in this format:
 
 ```
 ## Vision
@@ -56,24 +57,26 @@ Return your plan as a structured list. Example:
 
 ### Task 1: [name]
 - Model: sonnet
-- Brief: [what to do, 2-3 sentences max]
-- Files: [which files to read/create/modify]
-- Depends on: [nothing / Task N]
+- Depends on: nothing | Task N
+- Parallel with: Task N (if file-disjoint)
+- Goal: one sentence — what the user sees after this task is merged
+- Context: files and lines to touch; traps and gotchas the implementer needs
+- Contract: exact interfaces — function signatures, data shapes, field names with examples
+- Steps: numbered list of changes by file
+- Boundaries: what NOT to do
+- DoD: checklist + exact verification command and expected output
 
 ### Task 2: [name]
 - Model: opus
-- Brief: [what to do]
-- Files: [which files]
 - Depends on: Task 1
-
-### Task 3: [name]
-- Model: haiku
-- Brief: [what to do]
-- Files: [which files]
-- Depends on: nothing
+- Parallel with: nothing
+- Goal: ...
+[same fields]
 ```
 
-Mark tasks that can run in parallel (no dependencies between them).
+**Readiness test per task:** could an implementer execute it without opening any file for research? If not, add more Context or Contract.
+
+Mark tasks that can run in parallel (no shared files between them). Same-file tasks must be sequential.
 
 ## What You Don't Do
 - Don't write code

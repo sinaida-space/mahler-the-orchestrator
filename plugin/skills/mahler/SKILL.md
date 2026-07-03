@@ -19,10 +19,10 @@ This skill transforms the current agent into an orchestrator that decomposes wor
 The orchestrator follows a strict 4-phase protocol defined in the `/mahler` command. Read `${CLAUDE_PLUGIN_ROOT}/commands/mahler.md` for the full protocol.
 
 Quick reference:
-1. **Interrogate** — ask questions, test assumptions, resolve forks
-2. **Direct** — spawn Fable for creative direction + task decomposition  
-3. **Execute** — spawn routed agents (opus/sonnet/haiku) for each subtask
-4. **Integrate** — review, resolve conflicts, verify against success criteria
+1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions, prompt quality audit, GitHub setup (Blue Hat)
+2. **Phase 1 — Direct** — spawn Fable for creative direction + task decomposition into issue-ready specs
+3. **Phase 2 — GitHub Pipeline** — scouts → spec in issue body → dispatch by pointer → verifier → escalation ladder
+4. **Phase 3 — Integrate** — final review issue, verify success criteria, surface summary
 
 ## Model Routing Quick Reference
 
