@@ -51,7 +51,7 @@ Spawn a **fable** model agent as Creative Director. Read `${CLAUDE_PLUGIN_ROOT}/
 Fable's job:
 1. Synthesize interrogation answers into a creative/technical vision
 2. Decompose work into discrete subtasks
-3. Assign each subtask a model tier (opus / sonnet / haiku)
+3. Assign each subtask **both** a model tier (opus / sonnet / haiku) **and** an effort level (low / medium / high) — these are independent axes, not one decision. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the effort decision tree.
 4. Return a structured task list — not implementation, just the plan
 
 **Fable never reads the codebase directly.** If Fable needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. Fable decides; scouts provide facts only.
@@ -80,11 +80,11 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - [Fork]: [decision] — [one-line rationale]
 
 ## Task Breakdown
-| # | Task | Model | Depends on | Parallel with |
-|---|------|-------|------------|----------------|
-| 1 | ... | sonnet | — | Task 2 |
-| 2 | ... | opus | — | Task 1 |
-| 3 | ... | haiku | Task 1, 2 | — |
+| # | Task | Model | Effort | Depends on | Parallel with |
+|---|------|-------|--------|------------|----------------|
+| 1 | ... | sonnet | medium | — | Task 2 |
+| 2 | ... | opus | high | — | Task 1 |
+| 3 | ... | haiku | low | Task 1, 2 | — |
 
 ## Success Criteria
 [From Phase 0 — how we'll know this is done]
@@ -125,6 +125,7 @@ scouts → spec in issue body → dispatch by pointer → verifier → acceptanc
 Fable writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
 
 Spec template (see github-pipeline.md for full version):
+- **Model / Effort** — assigned tier and effort level, carried from the PRD (Phase 2 table); the dispatcher passes effort explicitly, it is never left to the implementer's default
 - **Goal** — one sentence: what the user sees after merge
 - **Context** — files and lines to touch; traps and gotchas
 - **Contract** — exact data formats, signatures, field names with example values
@@ -135,11 +136,12 @@ Spec template (see github-pipeline.md for full version):
 - **DoD + verification** — checklist + exact command to run
 
 Readiness test: can the implementer execute without opening any file for research?
+**Effort check:** if the spec still leaves a judgment call open, that's why effort is high — not an excuse to skip resolving the fork. Resolve what you can in the spec; leave high effort only for what genuinely can't be pre-resolved (math correctness, live debugging).
 
 **3.3 — Dispatch by pointer**
-Implementer prompt is a short envelope — no spec duplication:
+Implementer prompt is a short envelope — no spec duplication. Effort is set explicitly at dispatch, from the PRD's Effort column, not inherited from Fable's or the orchestrator's own setting:
 ```
-You are the implementer. Working dir: <path>.
+You are the implementer. Working dir: <path>. Effort: <low|medium|high, from spec>.
 Read your spec: `gh issue view N`. Execute exactly. No scope creep.
 On completion: run the DoD check from the spec. One conventional commit to main
 with "(#N)" at the end. Do NOT write "closes #N" — GitHub would auto-close before verification.
@@ -152,17 +154,18 @@ Send me a digest ≤15 lines + path to the report file.
 - Same-file tasks → sequential, direct commits to main
 - Disjoint-file groups → parallel in worktrees (`isolation: "worktree"`); merge order decided by orchestrator
 
-**3.5 — Model routing**
-Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`.
+**3.5 — Model and effort routing**
+Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for both decision trees.
 - **opus**: GLSL/shaders, complex architecture, hard debugging, algorithm design
 - **sonnet**: Web components, CSS/HTML/JS, tests, docs, API integration, TD Python scripts
 - **haiku**: File ops, formatting, boilerplate, renaming, config, package.json
+- **effort** is chosen independently of model: low for zero-judgment execution (renames, verifiers), medium as the default for a complete spec, high only where judgment survives into execution (math correctness, live debugging, an intentionally deferred tradeoff)
 
 **3.6 — Async spec-ahead**
 While an implementer works, Fable writes specs for the next tasks in the queue — not waiting. Before dispatching a pre-written spec, do a one-line diff-check against the previous task's actual output.
 
 **3.7 — Fresh-context verifier per task**
-After each implementer finishes, spawn a separate Sonnet verifier with a clean context:
+After each implementer finishes, spawn a separate Sonnet verifier with a clean context, always at **low effort** — it executes a command and reports, it doesn't interpret:
 ```
 Run the verification command from DoD of issue #N. Return: passed/failed, what you saw.
 Do not review code — only execute the check. Write your result to: <scratchpad>/reports/verify-N.md
@@ -170,10 +173,10 @@ Do not review code — only execute the check. Write your result to: <scratchpad
 The one who built it never verifies it.
 
 **3.8 — Escalation ladder on failure**
-1. First fail → same implementer, verifier's exact list of failures
-2. Second fail → same implementer again, higher effort
-3. Third fail → fresh implementer with clean context + verifier's diagnosis (stale context is often the cause)
-4. Fresh implementer fails → label `blocked`, short diagnosis to user (what was tried, where it fails, hypothesis), pipeline continues on independent tasks
+1. First fail → same implementer, same model, verifier's exact list of failures. If effort was medium, raise to high before considering anything else — a missed step is often an effort problem, not a model problem.
+2. Second fail → same implementer again, at high effort (or escalate model tier if the verifier's diagnosis points at capability, not thinking depth — see model-routing.md Escalation Rules)
+3. Third fail → fresh implementer with clean context + verifier's diagnosis, at high effort (stale context is often the cause, not effort)
+4. Fresh implementer fails → label `blocked`, short diagnosis to user (what was tried, where it fails, hypothesis). Do not silently jump to xhigh/ultrathink — flag the cost tradeoff to the user first. Pipeline continues on independent tasks.
 
 **3.9 — Acceptance**
 Only a Sonnet hand closes the issue, after verifier passes:
@@ -221,10 +224,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 - Fable does judgment only — never reads files, never runs commands, never writes code
 - Scouts bring facts; Fable decides. Never delegate a decision to a scout.
-- `ultrathink` / `xhigh` effort: never by default. High for Fable. Medium for Sonnet hands (medium Sonnet 5 ≈ high Sonnet 4.6).
+- **Model and effort are routed independently, per task** — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`. Don't default every sonnet task to medium out of habit; a fully-resolved rename on sonnet is still low effort.
+- `ultrathink` / `xhigh` effort: never by default, for any agent. Fable is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
 - Batch simple tasks into one Haiku agent; don't spawn many
 - Tasks < 20 lines of straightforward code: handle inline, don't spawn
-- When limit is low: raise effort, merge tasks, don't skip specs
+- When limit is low: lower effort where the task tolerates it and merge small tasks — don't skip specs to compensate
 
 ---
 

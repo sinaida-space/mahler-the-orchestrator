@@ -5,6 +5,10 @@ Issue-first orchestration. Every task becomes a GitHub issue with a complete spe
 ## Issue Spec Template
 
 ```markdown
+**Model / Effort:** e.g. `sonnet / medium`. Both assigned by Fable per model-routing.md —
+independent axes, not one decision. Carried verbatim into the dispatch envelope; the
+implementer never picks its own effort.
+
 **Goal:** One sentence — what the user sees after merge.
 
 **Context:** Files and lines to change; traps (duplicates, generated files,
@@ -32,6 +36,10 @@ Don't add beyond the spec.)
 
 **Readiness test:** Can the implementer execute without opening any file for research?
 If no → the spec is incomplete.
+
+**Effort check:** if Effort is `high` because a fork is still open, that's a spec gap — resolve
+the fork above instead. `high` should only survive for judgment that genuinely can't be
+pre-resolved (numerical correctness, live debugging).
 
 ## GitHub Setup (Blue Hat output from Phase 0)
 
@@ -63,7 +71,8 @@ Full spec lives in the issue body. Implementer prompt is a short operational env
 Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/prompt-quality.md` for the full block library — compose from there.
 
 ```xml
-You are the implementer. Working dir: <absolute-path>.
+You are the implementer. Working dir: <absolute-path>. Effort: <low|medium|high — from
+the issue's Model/Effort line, set explicitly here, not left to your default>.
 You implement exactly what the spec says — nothing more.
 
 Your spec: run `gh issue view <N>` and execute it strictly.
@@ -121,7 +130,7 @@ Use `isolation: "worktree"` when spawning parallel implementers. Merge order dec
 ## Verifier Prompt
 
 ```xml
-You are the verifier for issue #<N>. Working dir: <path>.
+You are the verifier for issue #<N>. Working dir: <path>. Effort: low.
 You run the DoD check and report what you observe — you do not review code.
 
 <do_not_act_before_instructions>
@@ -140,12 +149,14 @@ Send me: pass/fail + one-line summary of what you saw.
 
 | Failure # | Action |
 |-----------|--------|
-| 1st | Same implementer + verifier's exact failure list |
-| 2nd | Same implementer + higher effort (`effort: high`) |
-| 3rd | Fresh implementer (new context) + verifier's full diagnosis |
+| 1st | Same implementer, same model, raise to `effort: high` if not already there + verifier's exact failure list |
+| 2nd | Same implementer at `effort: high`; escalate model tier only if verifier's diagnosis points at capability, not thinking depth |
+| 3rd | Fresh implementer (new context), `effort: high` + verifier's full diagnosis |
 | 4th | Label `blocked`, stop this task, short diagnosis to user, continue pipeline on independent tasks |
 
 Fresh implementer on 3rd failure is specifically for cases where the original implementer's context has drifted. A new agent reading the spec fresh often unblocks immediately.
+
+Never jump to `xhigh`/`ultrathink` anywhere on this ladder without surfacing the cost tradeoff to the user first — it isn't part of the default escalation path.
 
 ## Acceptance
 
