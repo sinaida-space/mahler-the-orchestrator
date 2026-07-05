@@ -189,12 +189,21 @@ Never close from a commit. Never close before verification. Issue body stays cle
 
 ### Phase 4: Integration (YOU)
 
-Final pipeline task is a review issue: one Sonnet pass across the full diff from the start commit. Fable writes the review spec (what axes to check: handler correctness, resource leaks, feature conflicts). Bugs → fix commits through the reviewer.
+The final pipeline task is a dedicated review issue. Read `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` for the agent brief.
+
+**This is a distinct role from the verifier.** The per-task verifier (Phase 3.7) only ran a DoD command and reported pass/fail — it never read code for quality, and it never sees the diff as a whole. The reviewer does the opposite: fresh context, never the implementer of anything in the diff, reads the **full merged diff** from the pipeline's start commit — this is the only place cross-task conflicts surface, since each task was verified in isolation.
+
+1. Fable writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
+2. Create the review issue with that spec, same as any other task
+3. Dispatch the reviewer: **sonnet, high effort** — review is judgment-heavy, never route it to low
+4. Reviewer reports severity-ranked findings with file:line and concrete failure scenarios — not vague code smell
+5. Bugs found → fix commits, dispatched separately (through the reviewer or a fresh implementer for nontrivial fixes), never silently patched by whoever's still active
+6. Close the review issue once fixes are verified
 
 Then:
 1. Verify result meets Phase 0 success criteria
 2. Resolve any conflicts between agent outputs
-3. Present summary: what was built, which model, what's left
+3. Present summary: what was built, which model, what's left, and the reviewer's findings (fixed / accepted as-is / deferred)
 
 ---
 

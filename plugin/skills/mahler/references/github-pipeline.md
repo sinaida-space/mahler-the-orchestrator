@@ -145,6 +145,19 @@ Write your result to: <scratchpad-path>/reports/verify-<N>.md
 Send me: pass/fail + one-line summary of what you saw.
 ```
 
+## Verifier vs. Reviewer — do not conflate
+
+| | Verifier | Reviewer |
+|---|---|---|
+| Scope | One task's DoD | Full merged diff, all tasks |
+| When | After every implementer, per task | Once, at Phase 4, after all tasks merge |
+| Reads code? | No — runs a command, reports pass/fail | Yes — this is the whole job |
+| Effort | Always low | Always high |
+| Finds | Whether the spec's own check passed | Correctness bugs, resource leaks, cross-task conflicts, security |
+| Agent brief | Prompt only (above) | `${CLAUDE_PLUGIN_ROOT}/agents/reviewer.md` |
+
+A verifier passing every task does not mean the reviewer will find nothing — verifiers check isolation, the reviewer checks integration. Never skip the reviewer because every task's verifier passed.
+
 ## Escalation Ladder
 
 | Failure # | Action |
