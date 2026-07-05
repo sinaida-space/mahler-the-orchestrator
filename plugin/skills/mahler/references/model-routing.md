@@ -2,6 +2,8 @@
 
 Two independent dimensions per task: **model tier** (which model) and **effort level** (how hard it thinks). Route both — a hard task on the right model still needs the right effort, and an easy task on a capable model wastes tokens at high effort.
 
+This table assumes the ideal ensemble. When a tier is unavailable in the user's subscription, or the budget is too tight for a fleet at all, apply the fallback ladder and execution modes in `execution-modes.md` **before** routing individual tasks.
+
 ## Effort Decision Tree
 
 ```

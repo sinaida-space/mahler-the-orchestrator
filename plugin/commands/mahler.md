@@ -32,6 +32,7 @@ Six Hats gives you coverage across creative and technical standpoints:
 - Does this project have a GitHub repo? Should we create one?
 - How do you want to version this? (branches per feature, direct to main, tags at milestones?)
 - Any existing issue tracker or project board to use?
+- **Budget check:** "How's your usage budget — plenty (>40% weekly left), moderate (15–40%), or tight (<15%)? This decides whether I run a full agent pipeline or implement more myself." Mahler cannot read the user's quota — this question and runtime signals are the only sources. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for how the answer maps to a mode.
 
 Ask 5–9 questions total spanning the hats. Do NOT proceed until the user confirms direction. Surface forks explicitly: "I see two paths: A or B. A means [tradeoff]. Which?"
 
@@ -55,6 +56,8 @@ Fable's job:
 4. Return a structured task list — not implementation, just the plan
 
 **Fable never reads the codebase directly.** If Fable needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. Fable decides; scouts provide facts only.
+
+**Before spawning anything, settle the model ladder.** The fable/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: fable→orchestrator itself, opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
 
 If Fable is unavailable, perform this phase yourself with the same logic.
 
@@ -93,7 +96,14 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - Repo: [existing / to be created]
 - Branch strategy: [from Blue Hat answer]
 - N issues will be created, one per task above
+
+## Execution Mode
+- Mode: [Full Orchestra / Chamber / Solo] (budget: [user's Phase 0 answer])
+- Available models this session: [ladder result, with fallbacks noted]
+- Agent count: [N agents] — [or "none; I implement the PRD myself in one pass" for Solo]
 ```
+
+Approving the PRD approves the spend shape too — mode, models, agent count. If the user overrides the mode ("go full pipeline anyway"), that wins.
 
 Ask directly: **"Approve this PRD to proceed, or tell me what to change?"**
 
@@ -237,16 +247,23 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 - `ultrathink` / `xhigh` effort: never by default, for any agent. Fable is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
 - Batch simple tasks into one Haiku agent; don't spawn many
 - Tasks < 20 lines of straightforward code: handle inline, don't spawn
-- When limit is low: lower effort where the task tolerates it and merge small tasks — don't skip specs to compensate
+- When limit is low: drop an execution mode (Orchestra → Chamber → Solo, see execution-modes.md) — collapse agents and lower effort where the task tolerates it, never skip specs or the PRD stop to compensate
 
 ---
 
-## Graceful Degradation
+## Execution Modes & Graceful Degradation
 
-If model switching is unavailable:
-- Keep the 5-phase structure, including the PRD approval stop — it saves tokens and prevents wasted work regardless
-- Perform all phases on the current model
-- Still follow issue-first: write specs before implementing, even in the same context
+Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for the full logic. The short version:
+
+| Mode | Budget | Shape |
+|------|--------|-------|
+| 🎻 Full Orchestra | >40% weekly left | Standard pipeline: scouts, per-task implementers, per-task verifiers, reviewer |
+| 🎼 Chamber | 15–40%, or unknown | No scouts; small tasks batched into fewer agents; verification batched per group; reviewer doubles as final verifier |
+| 🎹 Solo | <15% | No subagent fleet — orchestrator implements the approved PRD itself in one pass, one verification at the end, one tracking issue, granular commits, self-review against the reviewer axes |
+
+The driver is overhead math: every subagent pays fixed context overhead (system prompt, spec read, report) before doing any work. A 14-agent fleet on a tight budget burns more on overhead than on implementation — collapse agents, never planning. The 5-phase structure, the PRD approval stop, and issue-first always survive; only the number of bodies changes.
+
+**Mid-run:** budget drains while working. On a rate-limit error, a failed spawn, or the user flagging it — finish the in-flight agent, drop one mode, tell the user in one line. Never silently keep spawning into a limit.
 
 ---
 
