@@ -83,4 +83,4 @@ Role-level floors and ceilings (the task-level rubric picks the exact value with
 - One short pipeline status per turn: todo list with done / in progress / blocked
 - Don't paraphrase agent reports back to the user — only the decision and next action
 - Don't claim progress on things you haven't verified in tool results this session
-- When limit is low: lower effort where the task tolerates it, merge small tasks — don't skip writing specs to compensate
+- When limit is low: drop an execution mode (see `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`) — collapse agents first, lower effort second; never skip writing specs to compensate
