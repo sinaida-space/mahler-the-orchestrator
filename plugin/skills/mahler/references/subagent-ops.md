@@ -67,16 +67,19 @@ If a scout returns a recommendation: treat it as raw material. Re-derive the dec
 
 When a scout needs to present N options: return all N with objective attributes (dates, sizes, line counts, dependency counts). You pick.
 
-## Effort Defaults
+## Effort Routing
 
-- Fable / Orchestrator: `high` (never ultrathink by default; `xhigh` only for genuinely hard architectural forks)
-- Sonnet implementers: `medium` (medium Sonnet 5 ≈ high Sonnet 4.6 for implementation tasks)
-- Sonnet verifiers: `low` (they run a command and report what they see — no thinking needed)
-- Escalate to `high` for a Sonnet implementer only after verifier has rejected it twice with diagnosis "didn't think hard enough"
+Effort is assigned **per task**, not per role — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the full decision tree. Fable sets it in the PRD's Effort column (Phase 2); the dispatcher carries it into every implementer and verifier prompt explicitly — it is never left to a model's default.
+
+Role-level floors and ceilings (the task-level rubric picks the exact value within these):
+- **Fable / Orchestrator**: always `high` — never lower (judgment is the whole job), never `xhigh`/`ultrathink` by default
+- **Implementers**: `low`–`high`, task-dependent. `medium` is the common case for a complete spec; `low` only for zero-judgment mechanical work; `high` only when judgment survives into execution
+- **Verifiers**: always `low` — they run a command and report what they see, never interpret
+- **Escalation to `high`** for an implementer happens on the ladder (see github-pipeline.md), specifically after the verifier's diagnosis says "didn't think hard enough," not preemptively
 
 ## Communication Discipline
 
 - One short pipeline status per turn: todo list with done / in progress / blocked
 - Don't paraphrase agent reports back to the user — only the decision and next action
 - Don't claim progress on things you haven't verified in tool results this session
-- When limit is low: raise effort, merge tasks, don't skip writing specs
+- When limit is low: lower effort where the task tolerates it, merge small tasks — don't skip writing specs to compensate
