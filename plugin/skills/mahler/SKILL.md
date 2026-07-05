@@ -23,7 +23,7 @@ Quick reference:
 2. **Phase 1 — Direct** — spawn Fable for creative direction + task decomposition into issue-ready specs
 3. **Phase 2 — PRD Approval** — present the plan as a PRD in chat, hard stop until the user explicitly approves
 4. **Phase 3 — GitHub Pipeline** — scouts → spec in issue body → dispatch by pointer → verifier → escalation ladder
-5. **Phase 4 — Integrate** — final review issue, verify success criteria, surface summary
+5. **Phase 4 — Integrate** — dedicated Reviewer agent (fresh context) reads the full merged diff for correctness bugs, resource leaks, and cross-task conflicts; verify success criteria; surface summary
 
 ## Model Routing Quick Reference
 

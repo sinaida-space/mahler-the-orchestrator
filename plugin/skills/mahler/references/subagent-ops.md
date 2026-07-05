@@ -75,6 +75,7 @@ Role-level floors and ceilings (the task-level rubric picks the exact value with
 - **Fable / Orchestrator**: always `high` — never lower (judgment is the whole job), never `xhigh`/`ultrathink` by default
 - **Implementers**: `low`–`high`, task-dependent. `medium` is the common case for a complete spec; `low` only for zero-judgment mechanical work; `high` only when judgment survives into execution
 - **Verifiers**: always `low` — they run a command and report what they see, never interpret
+- **Reviewer** (Phase 4, `agents/reviewer.md`): always `high` — reading a full merged diff for correctness bugs and cross-task conflicts is judgment-heavy, never route it lower. Distinct from a verifier: reviewer reads code, verifier only runs a command.
 - **Escalation to `high`** for an implementer happens on the ladder (see github-pipeline.md), specifically after the verifier's diagnosis says "didn't think hard enough," not preemptively
 
 ## Communication Discipline
