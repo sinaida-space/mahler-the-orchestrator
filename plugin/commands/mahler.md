@@ -83,11 +83,11 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - [Fork]: [decision] — [one-line rationale]
 
 ## Task Breakdown
-| # | Task | Model | Effort | Depends on | Parallel with |
-|---|------|-------|--------|------------|----------------|
-| 1 | ... | sonnet | medium | — | Task 2 |
-| 2 | ... | opus | high | — | Task 1 |
-| 3 | ... | haiku | low | Task 1, 2 | — |
+| # | Task | Model | Effort | Est. Tokens | Depends on | Parallel with |
+|---|------|-------|--------|-------------|------------|----------------|
+| 1 | ... | sonnet | medium | ~15k | — | Task 2 |
+| 2 | ... | opus | high | ~40k | — | Task 1 |
+| 3 | ... | haiku | low | ~5k | Task 1, 2 | — |
 
 ## Success Criteria
 [From Phase 0 — how we'll know this is done]
@@ -101,9 +101,10 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - Mode: [Full Orchestra / Chamber / Solo] (budget: [user's Phase 0 answer])
 - Available models this session: [ladder result, with fallbacks noted]
 - Agent count: [N agents] — [or "none; I implement the PRD myself in one pass" for Solo]
+- **Total token estimate: ~[sum]k**, broken down by model tier: haiku ~[x]k / sonnet ~[y]k / opus ~[z]k / fable ~[w]k
 ```
 
-Approving the PRD approves the spend shape too — mode, models, agent count. If the user overrides the mode ("go full pipeline anyway"), that wins.
+Est. Tokens is a rough order-of-magnitude call (spec read + implementation + report, per task), not a metered guarantee — state it as an estimate, not a promise. Approving the PRD approves the spend shape too — mode, models, agent count, and token estimate. If the user overrides the mode ("go full pipeline anyway"), that wins.
 
 Ask directly: **"Approve this PRD to proceed, or tell me what to change?"**
 
