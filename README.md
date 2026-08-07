@@ -210,3 +210,9 @@ Built by **Sinaida Krivchenko** — a new media artist working with interactive 
 ---
 
 **Ready to orchestrate?** Start your Claude Code session and type `/mahler`.
+
+## License
+
+Apache 2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+© 2026 Sinaida Krivchenko · [sinaida.eu](https://sinaida.eu)
