@@ -20,7 +20,8 @@ You're on a limited token budget (Pro plan, anyone?). You have a complex project
 
 **Mahler solves this by:**
 - Asking the right questions *first* (no wasted tokens on wrong directions)
-- Breaking your project into subtasks
+- Choosing the simplest architecture that fits, so a one-call task never becomes a three-agent pipeline
+- Breaking your project into subtasks, only as far as that architecture needs
 - Routing each task to the cheapest model that can handle it
 - Handling complex work (shaders, architecture) with Opus
 - Handling standard stuff (CSS, tests, docs) with Sonnet
@@ -31,37 +32,74 @@ Result: same quality, way fewer tokens burned.
 
 ---
 
-## How It Works: Four Phases
+## How It Works: Five Phases
 
 ### Phase 0: Interrogation
-Before writing a single line of code, Mahler asks you pointed questions:
+Before writing a single line of code, Mahler asks you pointed questions through an
+interactive choice dialogue:
 - What exactly are we building?
 - What's out of scope?
 - What constraints matter? (platform, performance, aesthetic)
 - How do we know it's done?
 - Are there decision forks to resolve?
+- What's your token budget for this?
 
 This phase prevents the biggest token waste: building the wrong thing.
 
 ### Phase 1: Creative Direction
 Fable (Claude's most creative, lightweight model) synthesizes your answers and produces:
 - A creative/technical vision
-- Visual or conceptual direction (if applicable)
-- A decomposition plan—breaking the work into discrete subtasks
-- Model routing for each task
+- **An architecture pattern for the task** — a single model call, a reflection loop, a
+  fixed chain, a multi-agent split, or a knowledge-graph-backed setup. Mahler picks the
+  cheapest one that fits and moves up only for a named reason. Most tasks are a single
+  call or a short chain, and saying so stops an agent fleet spawning by reflex.
+- A decomposition plan, only as deep as the pattern needs
+- Model and effort routing for each task
 
 If Fable isn't available on your plan, Mahler handles this phase itself using the same logic.
 
-### Phase 2: Execution
-Subtasks run in parallel, each on the right model:
+### Phase 2: PRD approval
+Mahler turns the plan into a short PRD — scope, architecture, task table, token
+estimate, execution mode — and stops. Nothing is built and no agent is spawned until
+you approve it.
+
+### Phase 3: Execution
+Tasks run through a GitHub-issue-first pipeline, each on the right model:
 - **Opus** → Shaders, complex algorithms, architecture decisions, hard debugging
 - **Sonnet** → Web features, tests, docs, API integration, standard implementation
 - **Haiku** → File operations, formatting, boilerplate, config changes
 
-Each agent gets a focused brief: what to do, what files to touch, acceptance criteria.
+Each agent gets a focused brief and has to earn its spawn overhead: work smaller than a
+spawn is done inline, adjacent tasks merge, and one verifier covers a group rather than
+one per task.
 
-### Phase 3: Integration
-Review all outputs, resolve conflicts, verify everything meets your success criteria from Phase 0.
+### Phase 4: Integration
+A fresh-context reviewer runs the project's own checks (build, lint, tests) against the
+merged result, then reads the full diff for cross-task conflicts. Findings become fix
+commits. Then Mahler verifies everything against your Phase 0 success criteria.
+
+---
+
+## Choosing an architecture
+
+Mahler treats "how many agents" as the wrong question. Before decomposing anything, it
+names the shape the task actually needs:
+
+| Task shape | Pattern |
+|---|---|
+| One well-scoped output, checkable in one pass | single model call |
+| Output needs revising against a rubric | reflection loop |
+| A fixed sequence of narrow transforms | chain, with a gate between each step |
+| Genuinely independent concerns | multi-agent, one per file-disjoint group |
+| The same facts are read across sessions or by several tasks | knowledge graph |
+
+It starts at the cheapest pattern and moves up only when a specific failure demands it.
+
+**Knowledge graphs.** Mahler does not carry a graph itself, but when a job needs to
+remember entities and relationships across sessions, it can scaffold one as part of the
+plan: a typed JSON or SQLite store (not Neo4j, for the scale these projects hit), with
+provenance on every edge and additive writes. This lands as its own approved task in the
+PRD, with the entities and edges it will hold spelled out.
 
 ---
 
@@ -81,7 +119,7 @@ Review all outputs, resolve conflicts, verify everything meets your success crit
 
 ### What You Get
 
-- **`/mahler` command** → Launches the full 4-phase workflow
+- **`/mahler` command** → Launches the full 5-phase workflow
 - **`/mahler` skill** → Provides routing logic and interrogation templates
 - **Four agent roles** → Creative Director (Fable), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
 - **Global CLAUDE.md** → Sets up context about your practice and working style
@@ -103,20 +141,27 @@ You want to create an interactive web app that displays real-time shader animati
 ### Phase 1: Creative Direction
 *Fable suggests:*
 - Visual direction: "Generative light patterns responding to input"
+- Architecture: multi-agent — the shader math, the React wrapper, and the animation loop
+  are genuinely independent work on different files
 - Decomposition:
   - Task 1 (Sonnet): React component + WebGL canvas setup
   - Task 2 (Opus): Fragment shader with math-heavy uniforms
   - Task 3 (Sonnet): Animation loop + performance optimization
-  - Task 4 (Haiku): Config file + boilerplate setup
+  - Task 4 (Haiku, inline): Config file + boilerplate — smaller than a spawn, folded into Task 1
 
-### Phase 2: Execution
+### Phase 2: PRD approval
+Mahler shows the scope, the architecture call, the task table with token estimates, and
+waits for your yes.
+
+### Phase 3: Execution
 Three agents work in parallel:
-- Sonnet builds the React wrapper
+- Sonnet builds the React wrapper (and the config)
 - Opus writes the shader
-- Haiku generates the config
+- Sonnet does the animation loop
 
-### Phase 3: Integration
-Review the outputs, test performance, iterate if needed.
+### Phase 4: Integration
+Run the build and tests against the merged result, review the full diff, test
+performance, iterate if needed.
 
 **Result:** A polished interactive app, optimized token spend, no wasted effort on wrong directions.
 
