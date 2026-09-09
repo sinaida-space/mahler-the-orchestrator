@@ -2,6 +2,15 @@
 
 Phase 0 is the most important phase. Every token spent here saves 10x in Phase 3 (the GitHub pipeline).
 
+## Delivery: AskUserQuestion tool, always
+
+Every question in this phase MUST be asked via the `AskUserQuestion` tool so the user gets the interactive "choose an option" dialogue. Never print questions as plain text and wait for a reply.
+
+- Batch up to 4 questions per tool call; chain additional calls for the rest.
+- Give each question 2-4 mutually exclusive options: short label + a description stating the implication of choosing it. The tool adds "Other" automatically — don't add your own.
+- Use `multiSelect: true` when choices aren't mutually exclusive.
+- Use the `header` field as a short chip matching the hat or topic: "Platform", "Feel", "Risks", "Done means", "Repo", "Budget".
+
 ## Pre-Check: Prompt Quality Audit
 
 Before writing Six Hats questions, run a 30-second audit of the original request.
@@ -73,9 +82,7 @@ Ask **5–9 questions total** spanning the hats. Don't ask all six hats exhausti
 
 ## Fork Detection
 
-When an answer implies multiple valid paths, surface the fork explicitly:
-
-"I see a decision point: we could [A] or [B]. Path A means [tradeoff]. Path B means [tradeoff]. Which?"
+When an answer implies multiple valid paths, surface the fork as an `AskUserQuestion` call: one question, one option per path, with each path's tradeoff in the option description.
 
 Common forks:
 - Build from scratch vs. extend existing code
