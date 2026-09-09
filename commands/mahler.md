@@ -51,9 +51,11 @@ Spawn a **fable** model agent as Creative Director. Read `${CLAUDE_PLUGIN_ROOT}/
 
 Fable's job:
 1. Synthesize interrogation answers into a creative/technical vision
-2. Decompose work into discrete subtasks
-3. Assign each subtask **both** a model tier (opus / sonnet / haiku) **and** an effort level (low / medium / high) — these are independent axes, not one decision. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the effort decision tree.
-4. Return a structured task list — not implementation, just the plan
+2. **Pick the architecture pattern first, before any decomposition.** Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Name the pattern the task actually needs — single call, reflection loop, chain, multi-agent, or graph — and the one-line reason. Start at the cheapest pattern that satisfies the task; move up only for a specific, named failure the added structure buys down. If the answer is "single call" or "chain", the multi-agent fleet is not used — the PRD says so explicitly.
+3. Decompose work into discrete subtasks **only to the depth the pattern requires.** Merge adjacent tasks by default (see the agent-justification rule in `execution-modes.md`); a task smaller than its own spawn overhead is marked "inline", not an agent.
+4. Assign each subtask **both** a model tier (opus / sonnet / haiku) **and** an effort level (low / medium / high) — independent axes. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the effort decision tree.
+5. If the pattern is **graph**, add one task that stands up the persistent store (typed JSON or SQLite, provenance on every edge — see architecture-patterns.md), with the entities and edges it will hold.
+6. Return a structured task list — not implementation, just the plan
 
 **Fable never reads the codebase directly.** If Fable needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. Fable decides; scouts provide facts only.
 
@@ -75,6 +77,11 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 ## Vision
 [1-2 sentences from Fable's synthesis]
 
+## Architecture
+- Pattern: [single call / reflection loop / chain / multi-agent / graph] — [one-line reason]
+- [If not single-call: why the cheaper pattern below it does not suffice, named concretely]
+- [If graph: the store, its entities, its edges]
+
 ## Scope
 - In scope: [bullet list]
 - Out of scope: [bullet list]
@@ -83,11 +90,13 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - [Fork]: [decision] — [one-line rationale]
 
 ## Task Breakdown
-| # | Task | Model | Effort | Est. Tokens | Depends on | Parallel with |
-|---|------|-------|--------|-------------|------------|----------------|
-| 1 | ... | sonnet | medium | ~15k | — | Task 2 |
-| 2 | ... | opus | high | ~40k | — | Task 1 |
-| 3 | ... | haiku | low | ~5k | Task 1, 2 | — |
+| # | Task | Model | Effort | Est. Tokens | Agent? | Depends on | Parallel with |
+|---|------|-------|--------|-------------|--------|------------|----------------|
+| 1 | ... | sonnet | medium | ~15k | agent | — | Task 2 |
+| 2 | ... | opus | high | ~40k | agent | — | Task 1 |
+| 3 | ... | haiku | low | ~5k | inline | Task 1, 2 | — |
+
+"Agent?" is `agent` or `inline`. A row is `inline` when its work is smaller than an agent's spawn overhead, or when it merges into an adjacent agent. Every `agent` row that a cheaper merge could absorb must say in one line why it stays separate (different model tier, or a file conflict forcing a parallel worktree).
 
 ## Success Criteria
 [From Phase 0 — how we'll know this is done]
@@ -101,6 +110,7 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - Mode: [Full Orchestra / Chamber / Solo] (budget: [user's Phase 0 answer])
 - Available models this session: [ladder result, with fallbacks noted]
 - Agent count: [N agents] — [or "none; I implement the PRD myself in one pass" for Solo]
+- Spawn overhead: ~[o]k of the ~[sum]k total (~[o/sum]%). If over ~1/3, the plan is collapsed before this PRD is shown — see the agent-justification rule in `execution-modes.md`.
 - **Total token estimate: ~[sum]k**, broken down by model tier: haiku ~[x]k / sonnet ~[y]k / opus ~[z]k / fable ~[w]k
 ```
 
@@ -245,6 +255,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 ## Token-Saving Rules
 
+- **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a scout + implementer + verifier is the most common waste.
+- **Every agent justifies its overhead.** The agent-justification rule in `execution-modes.md` applies in all modes, Full Orchestra included: inline what is smaller than a spawn, merge adjacent tasks by default, one verifier per group not per task, keep total spawn overhead under ~1/3 of the run.
 - Fable does judgment only — never reads files, never runs commands, never writes code
 - Scouts bring facts; Fable decides. Never delegate a decision to a scout.
 - **Model and effort are routed independently, per task** — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`. Don't default every sonnet task to medium out of habit; a fully-resolved rename on sonnet is still low effort.
