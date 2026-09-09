@@ -16,6 +16,57 @@ The orchestrator provides this path explicitly in every dispatch prompt. The scr
 - The file contains full detail with coordinates (file:line, timestamps, command output). It's for archaeology, not real-time judgment.
 - This pattern means a lost notification doesn't require a re-ask — the orchestrator reads the file.
 
+## Typed Digest by Role (artifact contract)
+
+The digest a subagent sends back is a **typed block with fixed fields**, not free prose. The orchestrator's context stays small because it consumes fields, not paragraphs it has to re-parse; Phase 4 integration reads the same shape from every task. Free text only for something the schema has no field for, capped at 5 lines under the block.
+
+**Scout**
+```yaml
+scout:
+  question: <the question you were given>
+  findings: [<fact with file:line or coordinate>, ...]
+  contracts: [<signature / data shape found>, ...]
+  traps: [<gotcha the implementer must know>, ...]
+  unknowns: [<what you could not determine>, ...]
+```
+
+**Implementer**
+```yaml
+implementer:
+  issue: <N>
+  changed_files: [<path>, ...]
+  commit: <sha>
+  dod_check: pass | fail | not_run
+  deviations: [<where you departed from the spec and why>, ...]
+  follow_ups: [<noticed, out of scope>, ...]
+```
+
+**Verifier**
+```yaml
+verifier:
+  issue: <N>
+  command: <exact command run>
+  result: passed | failed
+  observed: <one line — error text or success marker>
+```
+
+**Reviewer**
+```yaml
+reviewer:
+  deterministic:            # from Step 0, before any code reading
+    build: pass | fail | n/a
+    lint:  pass | fail | n/a
+    types: pass | fail | n/a
+    tests: <passed>/<total> | n/a
+    prose: pass | fail | n/a
+  findings:
+    - severity: high | med | low
+      at: <file:line>
+      scenario: <input X produces wrong output Y>
+      fix: <one line>
+  verdict: clean | fixes_required
+```
+
 **Agent-to-agent handoff:** Pass the path to the previous agent's report file in the next agent's dispatch prompt. Don't route large data through the orchestrator's context twice.
 
 **Scratchpad is a bus, not storage:** Durable artifacts (specs, docs, deliverables) live in the repo or issue body. The scratchpad is inter-agent wire.

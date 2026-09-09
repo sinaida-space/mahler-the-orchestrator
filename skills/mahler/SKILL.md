@@ -19,7 +19,7 @@ This skill transforms the current agent into an orchestrator that decomposes wor
 The orchestrator follows a strict 5-phase protocol defined in the `/mahler` command. Read `${CLAUDE_PLUGIN_ROOT}/commands/mahler.md` for the full protocol.
 
 Quick reference:
-1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions, prompt quality audit, GitHub setup (Blue Hat)
+1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions via the `AskUserQuestion` dialogue tool (never plain text), prompt quality audit, GitHub setup (Blue Hat)
 2. **Phase 1 — Direct** — spawn Fable for creative direction + task decomposition into issue-ready specs
 3. **Phase 2 — PRD Approval** — present the plan as a PRD in chat, hard stop until the user explicitly approves
 4. **Phase 3 — GitHub Pipeline** — scouts → spec in issue body → dispatch by pointer → verifier → escalation ladder
