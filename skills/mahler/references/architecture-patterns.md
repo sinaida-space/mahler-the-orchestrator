@@ -10,7 +10,7 @@ reflex.
 | Task shape | Pattern | How Mahler runs it |
 |---|---|---|
 | One well-scoped output, quality is checkable in one pass | **single call** | one implementer, no scouts, no verifier fleet, no reviewer — the orchestrator checks the DoD itself |
-| Output needs iterative revision against a rubric (copy, translation, security-sensitive code) | **reflection loop** | one implementer plus an evaluator pass against an explicit rubric; 2–4 iterations, hard cap, stop rule |
+| Output needs iterative revision against a rubric (copy, translation, security-sensitive code, schema or API design) | **reflection loop** | one implementer alternating draft and critique against an explicit rubric; or a role-separated proposer + critic pair for design-shaped outputs (see below); 2–4 iterations, hard cap, stop rule |
 | A fixed sequence of narrow transforms, each feeding the next | **chain** | ordered issues with a gate between each — the previous task's DoD is the next task's entry contract; a failed gate routes to a fallback, never forward |
 | Genuinely independent concerns needing different expertise or models | **multi-agent** | parallel implementers, one per file-disjoint group, merged by the orchestrator |
 | The same facts or entities are read by more than one task, or across more than one session | **graph** | add one task that stands up a persistent store (see below); other tasks read and write it instead of passing summaries |
@@ -30,6 +30,25 @@ reflex.
 5. **The graph earns itself.** Only when the same entity or relationship is queried by
    more than one task or across sessions. A store written once and never read back is a
    database table with extra overhead — use a plain file.
+
+## When the pattern is "reflection loop": one agent or two
+
+Default: one implementer alternating draft and critique against a written rubric, with a
+hard iteration cap and a stop rule.
+
+For **design-shaped outputs** — a schema, an API surface, a data model, a graph
+construction plan — split the loop into a **proposer + critic pair**: a proposer
+sub-agent emits the draft, a separate critic sub-agent with its own fresh context and
+its own rubric tears it down, and the two loop 2–3 times before the orchestrator takes
+the converged artifact. Role separation catches the error classes the author is blind
+to; one agent grading its own work does not.
+
+This is not the Phase 4 reviewer. The reviewer runs once, over the whole merged diff, at
+the end of the pipeline. The proposer/critic pair runs inside one task, before that task
+emits its output, and only for tasks where the first draft is reliably wrong.
+
+Same discipline as every loop: an immutable task statement, an explicit rubric, a hard
+iteration cap, deterministic checks before subjective ones.
 
 ## When the pattern is "graph": scaffolding a store
 
