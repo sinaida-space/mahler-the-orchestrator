@@ -18,13 +18,24 @@ Alongside the GitHub questions, always ask:
 
 > "How's your usage budget for this? Roughly: plenty (>40% of weekly left), moderate (15–40%), or tight (<15%)? This decides whether I run a full agent pipeline or implement more myself."
 
+## The agent-justification rule (all modes, not just tight budget)
+
+The core math: **every subagent costs fixed overhead before it does any work** — its system prompt, reading the spec, reporting back. A fleet of 14 implementers + verifiers can burn more on context overhead than on actual implementation. This holds at every budget, so the rule below applies in Full Orchestra too, not only when budget shrinks.
+
+Before the PRD lists a **separate agent** for a task, it clears this bar:
+
+- **Inline what is smaller than its own overhead.** A few lines, a rename, a one-file config edit — the orchestrator does it in-context. Spawning costs more than doing.
+- **Merge by default.** Adjacent tasks become one agent unless they need different model tiers *or* touch conflicting files and must run in parallel worktrees. Three haiku config edits are one agent. Two sonnet edits to the same file are one issue.
+- **A role earns a seat only if it catches an error class another role would miss.** A verifier that re-runs the exact DoD command the implementer already ran is not a second role, it is a second bill. One fresh-context verifier per *group* of merged tasks, not per task — per-task only where a task is flagged high-risk.
+- **Overhead budget.** Estimated spawn overhead across the whole run stays under ~1/3 of the run's total estimated tokens. If the PRD's agent list breaks that, collapse it before presenting: merge tasks, drop per-task verifiers to per-group, fold scouts into the orchestrator.
+
 ## The three modes
 
-The core math that drives this: **every subagent costs fixed overhead before it does any work** — its system prompt, reading the spec, reporting back. A fleet of 14 implementers + verifiers can burn more on context overhead than on actual implementation. When budget shrinks, the overhead-to-work ratio is what kills you, so the response is to collapse agents, not to skip planning.
+When budget shrinks, the overhead-to-work ratio is what kills you, so the response is to collapse agents further, not to skip planning.
 
 ### 🎻 Full Orchestra — budget plenty (>40%)
 
-The standard pipeline as written: scouts, per-task implementers routed by model+effort, fresh-context verifier per task, dedicated reviewer at Phase 4, parallel worktrees for disjoint groups. No changes.
+The widest pipeline: scouts, implementers routed by model+effort, fresh-context verification, dedicated reviewer at Phase 4, parallel worktrees for disjoint groups. "Widest" still means **every spawn clears the agent-justification bar above** — Orchestra is permission to spawn where it pays, not one agent per row in the task table. Verification is per group by default; per-task only for high-risk tasks.
 
 ### 🎼 Chamber — budget moderate (15–40%), or unknown
 
