@@ -34,7 +34,7 @@ Six Hats gives you coverage across creative and technical standpoints:
 - Any existing issue tracker or project board to use?
 - **Budget check:** "How's your usage budget — plenty (>40% weekly left), moderate (15–40%), or tight (<15%)? This decides whether I run a full agent pipeline or implement more myself." Mahler cannot read the user's quota — this question and runtime signals are the only sources. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for how the answer maps to a mode.
 
-Ask 5–9 questions total spanning the hats. Do NOT proceed until the user confirms direction. Surface forks explicitly: "I see two paths: A or B. A means [tradeoff]. Which?"
+Ask 5–9 questions total spanning the hats. **MANDATORY: every interrogation question goes through the `AskUserQuestion` tool** — the interactive "choose an option" dialogue — never as plain text in your response. Batch up to 4 questions per call with 2-4 concrete options each (the tool adds "Other" automatically); make a second call for the remaining questions. Do NOT proceed until the user confirms direction. Surface forks the same way: an `AskUserQuestion` with one option per path, tradeoff in the description.
 
 Stop when you can answer all five:
 1. What to build
@@ -106,7 +106,7 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 
 Est. Tokens is a rough order-of-magnitude call (spec read + implementation + report, per task), not a metered guarantee — state it as an estimate, not a promise. Approving the PRD approves the spend shape too — mode, models, agent count, and token estimate. If the user overrides the mode ("go full pipeline anyway"), that wins.
 
-Ask directly: **"Approve this PRD to proceed, or tell me what to change?"**
+Ask via `AskUserQuestion`: "Approve this PRD to proceed?" with options like "Approve" / "Approve with changes" / "Revise" (describe what each means in the option description).
 
 - If the user requests changes: revise and re-present. Do not proceed on a partial "looks fine but—" — resolve the "but" first.
 - If the user approves: proceed to Phase 3.
@@ -156,9 +156,10 @@ You are the implementer. Working dir: <path>. Effort: <low|medium|high, from spe
 Read your spec: `gh issue view N`. Execute exactly. No scope creep.
 On completion: run the DoD check from the spec. One conventional commit to main
 with "(#N)" at the end. Do NOT write "closes #N" — GitHub would auto-close before verification.
-Do not close or comment on the issue. Report: changed files, check result, any deviations.
+Do not close or comment on the issue.
 Write full report to: <scratchpad>/reports/<agent-name>.md before finishing.
-Send me a digest ≤15 lines + path to the report file.
+Send me the typed implementer digest from subagent-ops.md (issue, changed_files,
+commit, dod_check, deviations, follow_ups) + path to the report file.
 ```
 
 **3.4 — Parallelism by file overlap, not agent count**
@@ -178,8 +179,9 @@ While an implementer works, Fable writes specs for the next tasks in the queue �
 **3.7 — Fresh-context verifier per task**
 After each implementer finishes, spawn a separate Sonnet verifier with a clean context, always at **low effort** — it executes a command and reports, it doesn't interpret:
 ```
-Run the verification command from DoD of issue #N. Return: passed/failed, what you saw.
+Run the verification command from DoD of issue #N.
 Do not review code — only execute the check. Write your result to: <scratchpad>/reports/verify-N.md
+Return the typed verifier digest from subagent-ops.md (issue, command, result, observed).
 ```
 The one who built it never verifies it.
 
@@ -207,9 +209,10 @@ The final pipeline task is a dedicated review issue. Read `${CLAUDE_PLUGIN_ROOT}
 1. Fable writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
 2. Create the review issue with that spec, same as any other task
 3. Dispatch the reviewer: **sonnet, high effort** — review is judgment-heavy, never route it to low
-4. Reviewer reports severity-ranked findings with file:line and concrete failure scenarios — not vague code smell
-5. Bugs found → fix commits, dispatched separately (through the reviewer or a fresh implementer for nontrivial fixes), never silently patched by whoever's still active
-6. Close the review issue once fixes are verified
+4. Reviewer runs **Step 0 — the deterministic pass** (build / lint / types / tests / prose against merged HEAD) before reading any code; a failure there is the top finding, since each task was verified only in isolation — see reviewer.md
+5. Reviewer reports the typed reviewer digest — Step 0 results, then severity-ranked findings with file:line and concrete failure scenarios, not vague code smell
+6. Bugs found → fix commits, dispatched separately (through the reviewer or a fresh implementer for nontrivial fixes), never silently patched by whoever's still active
+7. Close the review issue once fixes are verified
 
 Then:
 1. Verify result meets Phase 0 success criteria
