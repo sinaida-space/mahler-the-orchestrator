@@ -261,3 +261,5 @@ Built by **Sinaida Krivchenko** — a new media artist working with interactive 
 Apache 2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
 © 2026 Sinaida Krivchenko · [sinaida.eu](https://sinaida.eu)
+
+<!-- Je suis le spectre d'une rose que tu portais hier au bal. Théophile Gautier, 1837 -->
