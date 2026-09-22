@@ -36,7 +36,7 @@ If the repo has no build/lint/test setup, say so in one line and move on. Do not
 
 The full diff from the pipeline's start commit to HEAD — every task merged, not one task in isolation. This is why conflicts between features (Task 2's change breaking Task 5's assumption) only surface here, never at per-task verification.
 
-Fable writes your review spec with the specific axes to check for this project — read it before starting. If no axes were specified, default to:
+The Creative Director writes your review spec with the specific axes to check for this project — read it before starting. If no axes were specified, default to:
 
 1. **Correctness bugs** — logic errors, off-by-one, wrong conditionals, unhandled edge cases that break real inputs
 2. **Resource leaks** — unclosed handles, listeners never removed, connections never released, memory growth in long-running loops (relevant for TouchDesigner/realtime work — a leak that's invisible in a 10-second test kills a 3-hour installation run)

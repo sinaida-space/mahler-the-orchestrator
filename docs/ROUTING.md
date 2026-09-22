@@ -132,7 +132,7 @@ Task 5: README and documentation
 If an agent returns an error or incomplete result:
 - Haiku task failing? → Re-run with Sonnet
 - Sonnet task hitting a wall? → Escalate to Opus
-- Fable unavailable? → Orchestrator handles creative direction itself
+- Planner model unavailable? → Drop one rung (fable → opus → sonnet-high → orchestrator itself)
 
 ---
 

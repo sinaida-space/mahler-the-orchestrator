@@ -45,11 +45,13 @@ Stop when you can answer all five:
 
 ---
 
-### Phase 1: Creative Direction (spawn Fable)
+### Phase 1: Creative Direction (spawn the Planner)
 
-Spawn a **fable** model agent as Creative Director. Read `${CLAUDE_PLUGIN_ROOT}/agents/creative-director.md`.
+Spawn the Creative Director on the **strongest model available this session** (the Planner). Read `${CLAUDE_PLUGIN_ROOT}/agents/creative-director.md`.
 
-Fable's job:
+**Choosing the Planner model.** Walk the planner ladder top-down and take the first model this subscription can actually spawn: `fable` → `opus` → `sonnet` (high effort) → the orchestrator itself. Pass it explicitly as the Agent tool's `model` parameter; family aliases (`opus`, `sonnet`) always resolve to the newest release of that family, so the ladder stays current without edits. Default when nothing is known: `opus` (available on Pro and above; `fable` is not on Pro). Evidence of availability: what the user said, the session's own model (if the session runs on it, it is available), past spawn failures. A failed spawn drops one rung for the rest of the session.
+
+The Creative Director's job:
 1. Synthesize interrogation answers into a creative/technical vision
 2. **Pick the architecture pattern first, before any decomposition.** Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Name the pattern the task actually needs — single call, reflection loop, chain, multi-agent, or graph — and the one-line reason. Start at the cheapest pattern that satisfies the task; move up only for a specific, named failure the added structure buys down. If the answer is "single call" or "chain", the multi-agent fleet is not used — the PRD says so explicitly.
 3. Decompose work into discrete subtasks **only to the depth the pattern requires.** Merge adjacent tasks by default (see the agent-justification rule in `execution-modes.md`); a task smaller than its own spawn overhead is marked "inline", not an agent.
@@ -57,11 +59,11 @@ Fable's job:
 5. If the pattern is **graph**, add one task that stands up the persistent store (typed JSON or SQLite, provenance on every edge — see architecture-patterns.md), with the entities and edges it will hold.
 6. Return a structured task list — not implementation, just the plan
 
-**Fable never reads the codebase directly.** If Fable needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. Fable decides; scouts provide facts only.
+**The Creative Director never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. The Creative Director decides; scouts provide facts only.
 
-**Before spawning anything, settle the model ladder.** The fable/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: fable→orchestrator itself, opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
+**Before spawning anything, settle the model ladder.** The planner/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: planner: fable→opus→sonnet-high→orchestrator itself; opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
 
-If Fable is unavailable, perform this phase yourself with the same logic.
+If no model above the orchestrator's own is spawnable, perform this phase yourself with the same logic.
 
 ---
 
@@ -69,13 +71,13 @@ If Fable is unavailable, perform this phase yourself with the same logic.
 
 **No GitHub issue is created and no agent is dispatched until the user explicitly approves this PRD.** This is a hard stop, not a formality — treat it like `ExitPlanMode`: present, then wait.
 
-Turn Fable's execution plan into a short PRD and show it to the user in the chat (not in a file, not in an issue yet):
+Turn the Creative Director's execution plan into a short PRD and show it to the user in the chat (not in a file, not in an issue yet):
 
 ```markdown
 # PRD: <project name>
 
 ## Vision
-[1-2 sentences from Fable's synthesis]
+[1-2 sentences from the Creative Director's synthesis]
 
 ## Architecture
 - Pattern: [single call / reflection loop / chain / multi-agent / graph] — [one-line reason]
@@ -111,7 +113,7 @@ Turn Fable's execution plan into a short PRD and show it to the user in the chat
 - Available models this session: [ladder result, with fallbacks noted]
 - Agent count: [N agents] — [or "none; I implement the PRD myself in one pass" for Solo]
 - Spawn overhead: ~[o]k of the ~[sum]k total (~[o/sum]%). If over ~1/3, the plan is collapsed before this PRD is shown — see the agent-justification rule in `execution-modes.md`.
-- **Total token estimate: ~[sum]k**, broken down by model tier: haiku ~[x]k / sonnet ~[y]k / opus ~[z]k / fable ~[w]k
+- **Total token estimate: ~[sum]k**, broken down by model tier: haiku ~[x]k / sonnet ~[y]k / opus ~[z]k / planner ([model]) ~[w]k
 ```
 
 Est. Tokens is a rough order-of-magnitude call (spec read + implementation + report, per task), not a metered guarantee — state it as an estimate, not a promise. Approving the PRD approves the spend shape too — mode, models, agent count, and token estimate. If the user overrides the mode ("go full pipeline anyway"), that wins.
@@ -134,16 +136,16 @@ Pipeline:
 
 ```
 scouts → spec in issue body → dispatch by pointer → verifier → acceptance → next
-(Sonnet)   (Fable writes)      (implementer)         (fresh context)
+(Sonnet)   (Planner writes)    (implementer)         (fresh context)
 ```
 
 **3.1 — Scouts (parallel Sonnet agents)**
 - One scout per area of needed context (codebase map, backlog review, API surface)
 - Each scout gets a specific question and a required format: files, lines, contracts, traps
-- Scouts return facts only. No recommendations. No "best option." Fable decides.
+- Scouts return facts only. No recommendations. No "best option." The Creative Director decides.
 
 **3.2 — Spec into issue body**
-Fable writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
+The Creative Director writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
 
 Spec template (see github-pipeline.md for full version):
 - **Model / Effort** — assigned tier and effort level, carried from the PRD (Phase 2 table); the dispatcher passes effort explicitly, it is never left to the implementer's default
@@ -160,7 +162,7 @@ Readiness test: can the implementer execute without opening any file for researc
 **Effort check:** if the spec still leaves a judgment call open, that's why effort is high — not an excuse to skip resolving the fork. Resolve what you can in the spec; leave high effort only for what genuinely can't be pre-resolved (math correctness, live debugging).
 
 **3.3 — Dispatch by pointer**
-Implementer prompt is a short envelope — no spec duplication. Effort is set explicitly at dispatch, from the PRD's Effort column, not inherited from Fable's or the orchestrator's own setting:
+Implementer prompt is a short envelope — no spec duplication. Effort is set explicitly at dispatch, from the PRD's Effort column, not inherited from the Creative Director's or the orchestrator's own setting:
 ```
 You are the implementer. Working dir: <path>. Effort: <low|medium|high, from spec>.
 Read your spec: `gh issue view N`. Execute exactly. No scope creep.
@@ -184,7 +186,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for both 
 - **effort** is chosen independently of model: low for zero-judgment execution (renames, verifiers), medium as the default for a complete spec, high only where judgment survives into execution (math correctness, live debugging, an intentionally deferred tradeoff)
 
 **3.6 — Async spec-ahead**
-While an implementer works, Fable writes specs for the next tasks in the queue — not waiting. Before dispatching a pre-written spec, do a one-line diff-check against the previous task's actual output.
+While an implementer works, the Creative Director writes specs for the next tasks in the queue — not waiting. Before dispatching a pre-written spec, do a one-line diff-check against the previous task's actual output.
 
 **3.7 — Fresh-context verifier per task**
 After each implementer finishes, spawn a separate Sonnet verifier with a clean context, always at **low effort** — it executes a command and reports, it doesn't interpret:
@@ -216,7 +218,7 @@ The final pipeline task is a dedicated review issue. Read `${CLAUDE_PLUGIN_ROOT}
 
 **This is a distinct role from the verifier.** The per-task verifier (Phase 3.7) only ran a DoD command and reported pass/fail — it never read code for quality, and it never sees the diff as a whole. The reviewer does the opposite: fresh context, never the implementer of anything in the diff, reads the **full merged diff** from the pipeline's start commit — this is the only place cross-task conflicts surface, since each task was verified in isolation.
 
-1. Fable writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
+1. The Creative Director writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
 2. Create the review issue with that spec, same as any other task
 3. Dispatch the reviewer: **sonnet, high effort** — review is judgment-heavy, never route it to low
 4. Reviewer runs **Step 0 — the deterministic pass** (build / lint / types / tests / prose against merged HEAD) before reading any code; a failure there is the top finding, since each task was verified only in isolation — see reviewer.md
@@ -257,10 +259,10 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 - **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a scout + implementer + verifier is the most common waste.
 - **Every agent justifies its overhead.** The agent-justification rule in `execution-modes.md` applies in all modes, Full Orchestra included: inline what is smaller than a spawn, merge adjacent tasks by default, one verifier per group not per task, keep total spawn overhead under ~1/3 of the run.
-- Fable does judgment only — never reads files, never runs commands, never writes code
-- Scouts bring facts; Fable decides. Never delegate a decision to a scout.
+- The Creative Director does judgment only — never reads files, never runs commands, never writes code
+- Scouts bring facts; the Creative Director decides. Never delegate a decision to a scout.
 - **Model and effort are routed independently, per task** — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`. Don't default every sonnet task to medium out of habit; a fully-resolved rename on sonnet is still low effort.
-- `ultrathink` / `xhigh` effort: never by default, for any agent. Fable is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
+- `ultrathink` / `xhigh` effort: never by default, for any agent. The Creative Director is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
 - Batch simple tasks into one Haiku agent; don't spawn many
 - Tasks < 20 lines of straightforward code: handle inline, don't spawn
 - When limit is low: drop an execution mode (Orchestra → Chamber → Solo, see execution-modes.md) — collapse agents and lower effort where the task tolerates it, never skip specs or the PRD stop to compensate

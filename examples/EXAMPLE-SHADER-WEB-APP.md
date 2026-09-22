@@ -39,9 +39,9 @@ Let's walk through a real project using `/mahler` from start to finish.
 
 ---
 
-## Phase 1: Creative Direction (Fable)
+## Phase 1: Creative Direction (Planner, on Opus)
 
-**Fable synthesizes and returns:**
+**The Creative Director synthesizes and returns:**
 
 ```
 ## Vision
@@ -164,7 +164,7 @@ Deploy to Vercel. Done.
 
 **Mahler approach (routed):**
 - Phase 0 interrogation: 50k tokens
-- Phase 1 (Fable): 80k tokens
+- Phase 1 (Planner on Opus): 80k tokens
 - React + Canvas (Sonnet): 120k tokens
 - Shader (Opus): 180k tokens
 - Animation loop (Sonnet): 100k tokens
