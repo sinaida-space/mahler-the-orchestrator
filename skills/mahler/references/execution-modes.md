@@ -66,11 +66,11 @@ Budget is spent while working; a run that started Full Orchestra may need to lan
 
 ## Model availability ladder
 
-The fable/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subscriptions differ; models come and go. At Phase 1, before spawning anything, determine what's actually available — from what the user said, from the session's own model, and from spawn failures — and route with fallbacks:
+The planner/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subscriptions differ; models come and go. At Phase 1, before spawning anything, determine what's actually available — from what the user said, from the session's own model, and from spawn failures — and route with fallbacks:
 
 | Ideal | If unavailable → | Adjustment |
 |-------|------------------|------------|
-| fable (creative direction) | orchestrator does Phase 1 itself | Already in the skill; same logic, same output format |
+| planner (creative direction) | strongest spawnable model: fable → opus → sonnet at **high** → orchestrator does Phase 1 itself | Planning is where quality is decided, so it always gets the top available rung; aliases resolve to the newest release in each family |
 | opus (complex/judgment work) | sonnet at **high** effort | Sonnet-high covers most opus-tier tasks; flag genuinely hard math/architecture to the user as elevated-risk |
 | sonnet (standard work) | opus at **medium** effort if that's what exists, else current model | Paying more per token but not more thinking |
 | haiku (mechanical work) | sonnet at **low** effort | Low effort keeps it from over-thinking mechanical work |
@@ -88,7 +88,7 @@ The Phase 2 PRD gains two lines the user approves explicitly:
 ```markdown
 ## Execution Mode
 - Mode: Chamber (budget: moderate, per your Phase 0 answer)
-- Available models this session: sonnet, haiku (fable, opus unavailable → sonnet-high covers opus-tier tasks)
+- Available models this session: sonnet, haiku (fable, opus unavailable → planner and opus-tier tasks run on sonnet-high)
 - Agent count: ~4 (2 batched implementers, 1 batched verifier, 1 reviewer) instead of 9
 ```
 

@@ -26,7 +26,7 @@ You're on a limited token budget (Pro plan, anyone?). You have a complex project
 - Handling complex work (shaders, architecture) with Opus
 - Handling standard stuff (CSS, tests, docs) with Sonnet
 - Handling mechanical work (formatting, boilerplate) with Haiku
-- Orchestrating everything with Fable for creative direction
+- Orchestrating everything with the strongest model your plan offers (Fable if available, otherwise Opus) for creative direction
 
 Result: same quality, way fewer tokens burned.
 
@@ -47,7 +47,7 @@ interactive choice dialogue:
 This phase prevents the biggest token waste: building the wrong thing.
 
 ### Phase 1: Creative Direction
-Fable (Claude's most creative, lightweight model) synthesizes your answers and produces:
+The Planner synthesizes your answers and produces:
 - A creative/technical vision
 - **An architecture pattern for the task** — a single model call, a reflection loop, a
   fixed chain, a multi-agent split, or a knowledge-graph-backed setup. Mahler picks the
@@ -56,7 +56,7 @@ Fable (Claude's most creative, lightweight model) synthesizes your answers and p
 - A decomposition plan, only as deep as the pattern needs
 - Model and effort routing for each task
 
-If Fable isn't available on your plan, Mahler handles this phase itself using the same logic.
+The Planner runs on the strongest model your subscription can spawn, picked at run time: Fable → Opus → Sonnet (high effort) → Mahler itself. On Pro that means Opus (currently Opus 5.5). Model aliases resolve to the newest release of each family, so a new Opus is picked up without any change to Mahler.
 
 ### Phase 2: PRD approval
 Mahler turns the plan into a short PRD — scope, architecture, task table, token
@@ -121,7 +121,7 @@ PRD, with the entities and edges it will hold spelled out.
 
 - **`/mahler` command** → Launches the full 5-phase workflow
 - **`/mahler` skill** → Provides routing logic and interrogation templates
-- **Four agent roles** → Creative Director (Fable), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
+- **Four agent roles** → Creative Director (strongest available model), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
 - **Global CLAUDE.md** → Sets up context about your practice and working style
 
 ---
@@ -139,7 +139,7 @@ You want to create an interactive web app that displays real-time shader animati
 - Should it respond to user input (mouse, touch, audio)?
 
 ### Phase 1: Creative Direction
-*Fable suggests:*
+*The Planner suggests:*
 - Visual direction: "Generative light patterns responding to input"
 - Architecture: multi-agent — the shader math, the React wrapper, and the animation loop
   are genuinely independent work on different files
@@ -178,7 +178,7 @@ performance, iterate if needed.
 
 **With Mahler** (routed work):
 - Interrogation (current model): 100k tokens
-- Fable direction: 150k tokens
+- Planner direction (Opus): 150k tokens
 - Opus shader: 400k tokens
 - Sonnet web: 350k tokens
 - Haiku boilerplate: 50k tokens
@@ -224,7 +224,7 @@ If you work with interactive projections, TouchDesigner, shaders, and web—this
 
 - **Requires Claude Code** (the CLI or IDE extension)
 - **Model switching** needs Claude Pro/Max (or API). On Pro plan? Mahler degrades gracefully—same workflow, one model
-- **Fable availability** varies by plan. If unavailable, Mahler performs creative direction itself
+- **Planner model** is chosen by availability: Fable → Opus → Sonnet → Mahler itself. Fable is not on Pro, so Pro runs planning on Opus
 - **Not a replacement for you** — Mahler routes work, but your creative decisions drive the direction
 
 ---

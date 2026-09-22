@@ -1,6 +1,6 @@
 # Architecture Patterns — pick the shape before decomposing
 
-Phase 1 does this first, before any task breakdown. Fable names the pattern the task
+Phase 1 does this first, before any task breakdown. The Creative Director names the pattern the task
 actually needs and the reason, and writes both into the PRD above the task table. Most
 tasks are not multi-agent work; saying so out loud is what stops the fleet spawning by
 reflex.

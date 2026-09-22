@@ -120,10 +120,10 @@ When a scout needs to present N options: return all N with objective attributes 
 
 ## Effort Routing
 
-Effort is assigned **per task**, not per role — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the full decision tree. Fable sets it in the PRD's Effort column (Phase 2); the dispatcher carries it into every implementer and verifier prompt explicitly — it is never left to a model's default.
+Effort is assigned **per task**, not per role — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the full decision tree. The Creative Director sets it in the PRD's Effort column (Phase 2); the dispatcher carries it into every implementer and verifier prompt explicitly — it is never left to a model's default.
 
 Role-level floors and ceilings (the task-level rubric picks the exact value within these):
-- **Fable / Orchestrator**: always `high` — never lower (judgment is the whole job), never `xhigh`/`ultrathink` by default
+- **Creative Director / Orchestrator**: always `high` — never lower (judgment is the whole job), never `xhigh`/`ultrathink` by default
 - **Implementers**: `low`–`high`, task-dependent. `medium` is the common case for a complete spec; `low` only for zero-judgment mechanical work; `high` only when judgment survives into execution
 - **Verifiers**: always `low` — they run a command and report what they see, never interpret
 - **Reviewer** (Phase 4, `agents/reviewer.md`): always `high` — reading a full merged diff for correctness bugs and cross-task conflicts is judgment-heavy, never route it lower. Distinct from a verifier: reviewer reads code, verifier only runs a command.

@@ -19,7 +19,7 @@ Does it require weighing tradeoffs the spec didn't resolve, non-obvious debuggin
 math/algorithm correctness, or architecture that affects other tasks?
   → YES → high
 
-Is this Fable doing decomposition, fork-resolution, or spec-writing (judgment, not code)?
+Is this the Creative Director doing decomposition, fork-resolution, or spec-writing (judgment, not code)?
   → YES → high (never xhigh/ultrathink by default)
 ```
 
@@ -29,7 +29,7 @@ Is this Fable doing decomposition, fork-resolution, or spec-writing (judgment, n
 |--------|---------|--------|
 | low | Verifiers (run a command, report), mechanical edits, renames, config | Zero judgment calls in execution |
 | medium | Default for implementers with a complete issue spec | Spec resolved the forks; agent follows steps |
-| high | Fable (always), or an implementer facing unresolved tradeoffs, hard debugging, math/algorithm correctness | Judgment calls remain at execution time |
+| high | Creative Director (always), or an implementer facing unresolved tradeoffs, hard debugging, math/algorithm correctness | Judgment calls remain at execution time |
 | xhigh/ultrathink | Never by default | Only if a high-effort agent failed twice and the verifier's diagnosis is "didn't think hard enough" |
 
 ## Routing Decision Tree
@@ -53,9 +53,9 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 ### Creative / Conceptual
 | Task | Model | Rationale |
 |------|-------|-----------|
-| Brainstorm concepts, visual direction | fable | Creative strength, cheapest |
-| Art references, mood boards, naming | fable | Doesn't need technical depth |
-| Task decomposition, project planning | fable | Strategic thinking, low token cost |
+| Brainstorm concepts, visual direction | planner | Strongest available model (fable → opus → sonnet-high) |
+| Art references, mood boards, naming | planner | Judgment work, no code |
+| Task decomposition, project planning | planner | Planning decides quality downstream; always the top available rung |
 
 ### Shaders & Graphics
 | Task | Model | Rationale |
@@ -106,7 +106,7 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 | Standard CRUD/API route from spec | medium | Spec + contract already fixed the shape |
 | CSS/HTML boilerplate, config, renaming | low | No judgment in execution |
 | Verifier running a DoD command | low | Execute and report, no interpretation |
-| Fable: decomposition, fork resolution, spec writing | high | This is where judgment lives — never route Fable to low |
+| Creative Director: decomposition, fork resolution, spec writing | high | This is where judgment lives — never route it to low |
 | Implementer, 2nd escalation retry | high | Verifier flagged reasoning gap, not a mechanical miss |
 
 ## Escalation Rules
@@ -114,7 +114,7 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 **Model escalation:**
 If a haiku agent returns an error or incomplete result, escalate to sonnet.
 If a sonnet agent hits a wall on a subtask, escalate to opus.
-Never escalate fable work — if fable is unavailable, the orchestrator handles it.
+Planner work is never escalated: it already runs on the strongest available model (fable → opus → sonnet-high → the orchestrator itself). An unavailable rung drops one step for the session.
 
 **Effort escalation (independent of model):**
 First failure → same model, raise effort one level before considering a model change.

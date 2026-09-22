@@ -5,7 +5,7 @@ Issue-first orchestration. Every task becomes a GitHub issue with a complete spe
 ## Issue Spec Template
 
 ```markdown
-**Model / Effort:** e.g. `sonnet / medium`. Both assigned by Fable per model-routing.md —
+**Model / Effort:** e.g. `sonnet / medium`. Both assigned by the Creative Director per model-routing.md —
 independent axes, not one decision. Carried verbatim into the dispatch envelope; the
 implementer never picks its own effort.
 
@@ -186,7 +186,7 @@ Rules:
 
 ## Async Spec-Ahead
 
-While an implementer works, Fable writes specs for the next tasks in the queue.
+While an implementer works, the Creative Director writes specs for the next tasks in the queue.
 Before dispatching a pre-written spec, do a one-line sanity check: does the actual diff from the previous task match what the pre-written spec assumed? If not, update the spec before dispatch.
 
 ## Grounding Gate (for synthesis tasks)
