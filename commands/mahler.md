@@ -169,10 +169,16 @@ Read your spec: `gh issue view N`. Execute exactly. No scope creep.
 On completion: run the DoD check from the spec. One conventional commit to main
 with "(#N)" at the end. Do NOT write "closes #N" — GitHub would auto-close before verification.
 Do not close or comment on the issue.
+Context budget: max 40 tool calls or ~120k context; cap every output (head/tail,
+logs to file); no sleep/polling; same check fails twice → stop and report.
+At the limit write <scratchpad>/reports/<agent-name>.handoff.md and stop.
 Write full report to: <scratchpad>/reports/<agent-name>.md before finishing.
 Send me the typed implementer digest from subagent-ops.md (issue, changed_files,
 commit, dod_check, deviations, follow_ups) + path to the report file.
 ```
+
+**3.3a — Relay on handoff**
+If a digest says the agent stopped at its context budget, spawn a **fresh** agent of the same tier with the same envelope plus: "Read `<scratchpad>/reports/<prev>.handoff.md` first; don't redo `done`." Max 3 relays per task, then `blocked`. Never resume a bloated agent with SendMessage; that re-reads its whole context. Rules: `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/context-budget.md`.
 
 **3.4 — Parallelism by file overlap, not agent count**
 - Same-file tasks → sequential, direct commits to main
@@ -192,7 +198,8 @@ While an implementer works, the Creative Director writes specs for the next task
 After each implementer finishes, spawn a separate Sonnet verifier with a clean context, always at **low effort** — it executes a command and reports, it doesn't interpret:
 ```
 Run the verification command from DoD of issue #N.
-Do not review code — only execute the check. Write your result to: <scratchpad>/reports/verify-N.md
+Do not review code — only execute the check. Print a summary line, not raw dumps. Max 10 tool calls.
+Write your result to: <scratchpad>/reports/verify-N.md
 Return the typed verifier digest from subagent-ops.md (issue, command, result, observed).
 ```
 The one who built it never verifies it.
@@ -257,6 +264,8 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 ## Token-Saving Rules
 
+- **Context is the real cost.** Each turn re-reads the whole context, so cache reads grow with turns × context size. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/context-budget.md` before Phase 3. Every dispatch carries the budget lines; long tasks are split across fresh agents via handoff files, never grown in one agent.
+- **Orchestrator stays thin.** No browser checks or debugging in main; dispatch a verifier. When main context passes ~100k after a phase, write a handoff to the scratchpad and suggest `/compact` or a fresh session in one line.
 - **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a scout + implementer + verifier is the most common waste.
 - **Every agent justifies its overhead.** The agent-justification rule in `execution-modes.md` applies in all modes, Full Orchestra included: inline what is smaller than a spawn, merge adjacent tasks by default, one verifier per group not per task, keep total spawn overhead under ~1/3 of the run.
 - The Creative Director does judgment only — never reads files, never runs commands, never writes code
