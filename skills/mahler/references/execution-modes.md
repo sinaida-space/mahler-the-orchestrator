@@ -6,7 +6,7 @@ Mahler adapts two things to the session's real conditions: **how much orchestrat
 
 The user always wants to save tokens. Mahler **never asks** how much budget or weekly limit is left; it cannot read the quota, and the question itself costs a round-trip and an interruption. Every run is token-lean by default.
 
-Mode comes from the task, not from a budget answer:
+Mode comes from the task, not from a budget answer. The user still gets the **choice of a bigger version**: the Phase 2 approval question offers the recommended mode plus the next size up and down, each with its token estimate and what it adds or drops. That is the only place size is asked.
 
 1. **The user says so** — "tight", "go wide", "solo", "full pipeline". Always wins.
 2. **Task shape** — the architecture pattern from Phase 1 picks the mode (see table below).
@@ -16,7 +16,7 @@ Mode comes from the task, not from a budget answer:
 |------------------------------|------|
 | single call, or ≤ ~3 small tasks | 🎹 Solo |
 | chain / reflection loop / multi-agent (the usual case) | 🎼 Chamber (**default**) |
-| large project with disjoint parallel groups **and** the user asked for it | 🎻 Full Orchestra |
+| large project with disjoint parallel groups | 🎻 Full Orchestra, offered as "bigger" at approval; recommended only when parallelism clearly pays |
 
 ## Think high, read mid, do cheap
 
@@ -54,7 +54,7 @@ Before the PRD lists a **separate agent** for a task, it clears this bar:
 
 Smaller modes collapse agents, never planning. The overhead-to-work ratio is what kills a run.
 
-### 🎻 Full Orchestra — only on request, for large parallel projects
+### 🎻 Full Orchestra — the "bigger" option at approval
 
 The widest pipeline: readers, implementers routed by model+effort, fresh-context verification, dedicated reviewer at Phase 4, parallel worktrees for disjoint groups. "Widest" still means **every spawn clears the agent-justification bar above** — Orchestra is permission to spawn where it pays, not one agent per row in the task table. Verification is per group by default; per-task only for high-risk tasks.
 

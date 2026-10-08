@@ -35,7 +35,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the d
 - **Never dispatch before approval**: no issue is created and no agent is spawned until the user approves the Phase 2 PRD
 - **Cheapest capable model wins**: don't use Opus for Haiku work
 - **Parallel when possible**: independent tasks run simultaneously
-- **Lean by default**: never asks about budget. Mode follows task shape (Chamber default, Solo for small tasks, Full Orchestra only on request). Think high (strongest model plans and judges), read mid (sonnet-low readers digest context), do cheap (sonnet implements, haiku for mechanical) — see `references/execution-modes.md`
+- **Lean by default**: never asks about budget. Mode follows task shape (Chamber default, Solo for small tasks); the PRD approval offers a bigger and a leaner version with token estimates. Think high (strongest model plans and judges), read mid (sonnet-low readers digest context), do cheap (sonnet implements, haiku for mechanical) — see `references/execution-modes.md`
 - **Context budget**: every subagent has a tool-call cap and output-capping rules; long tasks relay across fresh agents through handoff files instead of growing one context (see `references/context-budget.md`)
 - **Availability over assumption**: the model hierarchy is a fallback ladder, not a requirement — planner fable→opus→sonnet-high→self, opus→sonnet-high, haiku→sonnet-low, nothing→Solo
 - **Degrade gracefully**: the 5-phase structure, PRD stop, and issue-first survive every mode; only the number of agents changes
