@@ -119,7 +119,15 @@ Turn the Creative Director's execution plan into a short PRD and show it to the 
 
 Est. Tokens is a rough order-of-magnitude call (spec read + implementation + report, per task), not a metered guarantee — state it as an estimate, not a promise. Approving the PRD approves the spend shape too — mode, models, agent count, and token estimate. If the user overrides the mode ("go full pipeline anyway"), that wins.
 
-Ask via `AskUserQuestion`: "Approve this PRD to proceed?" with options like "Approve" / "Approve with changes" / "Revise" (describe what each means in the option description).
+Ask via `AskUserQuestion` — **one question that approves the plan and picks its size at once** (this is the only place Mahler offers a bigger version; it never asks about budget in Phase 0):
+
+> "Approve this PRD — which size?"
+> 1. **Approve — [recommended mode] (Recommended)** · ~[sum]k tokens · [agent count]
+> 2. **Approve bigger — [next mode up]** · ~[sum]k tokens · *what it adds in concrete terms* (e.g. "per-task verifiers, parallel worktrees for the shader and UI groups, a dedicated reviewer")
+> 3. **Approve leaner — [next mode down]** · ~[sum]k tokens · *what it drops* (e.g. "no subagents, one verification at the end, self-review")
+> 4. **Revise** · tell me what to change
+
+Rules: estimate every option from the same task table, so the numbers are comparable. Name what the bigger version actually buys for *this* task; if it buys nothing (single-call or Solo-shaped tasks), drop that option. Omit the leaner option when already Solo. "Other" covers edits.
 
 - If the user requests changes: revise and re-present. Do not proceed on a partial "looks fine but—" — resolve the "but" first.
 - If the user approves: proceed to Phase 3.
@@ -287,7 +295,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for the
 | Mode | When | Shape |
 |------|------|-------|
 | 🎼 Chamber | **Default** | Sonnet readers digest context; small tasks batched; verification per group; reviewer doubles as final verifier |
-| 🎻 Full Orchestra | Only on request, large parallel projects | Readers, per-task implementers, per-group verifiers, reviewer, parallel worktrees |
+| 🎻 Full Orchestra | Picked as "Approve bigger" at the PRD stop | Readers, per-task implementers, per-group verifiers, reviewer, parallel worktrees |
 | 🎹 Solo | Single call or ≤ ~3 small tasks; or the limit bites | No subagent fleet — orchestrator implements the approved PRD itself in one pass, one verification at the end, one tracking issue, granular commits, self-review against the reviewer axes |
 
 The driver is overhead math: every subagent pays fixed context overhead (system prompt, spec read, report) before doing any work. A 14-agent fleet on a tight budget burns more on overhead than on implementation — collapse agents, never planning. The 5-phase structure, the PRD approval stop, and issue-first always survive; only the number of bodies changes.
