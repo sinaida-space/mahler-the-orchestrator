@@ -71,6 +71,10 @@ reviewer:
 
 **Scratchpad is a bus, not storage:** Durable artifacts (specs, docs, deliverables) live in the repo or issue body. The scratchpad is inter-agent wire.
 
+## Context Budget
+
+Every dispatch includes the budget lines from `context-budget.md` (tool-call cap, output capping, no polling, stop after two identical failures, handoff file at the limit). A handoff is continued by a **fresh** agent, never by SendMessage to the bloated one.
+
 ## Lost Report Recovery
 
 An agent finishes but sends only an idle notification with no digest.
