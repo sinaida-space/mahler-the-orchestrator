@@ -42,7 +42,7 @@ Raw output that enters context is paid on every turn after it.
 ## Split roles to keep contexts short
 
 - **Implementers don't debug in the browser.** They build, run the DoD command once, commit, report. A failing visual/perf check goes to the verifier and back through the escalation ladder, each step in a fresh context.
-- **Investigation goes to a scout.** If the spec needs profiling or root-cause work first, that's a separate scout (report ≤15 lines), then a fresh implementer with the findings in its envelope.
+- **Investigation goes to a reader.** If the spec needs profiling or root-cause work first, that's a separate reader (report ≤15 lines), then a fresh implementer with the findings in its envelope.
 - **Orchestrator stays thin.** It doesn't run browser checks itself (30+ browser calls in main is the same leak). It dispatches, reads digests, decides. After each phase, if main context passes ~100k, write a handoff to the scratchpad and tell the user one line: "Context is heavy: `/compact` or start a fresh session with `<handoff path>`."
 
 ## Effort

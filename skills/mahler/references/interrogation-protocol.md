@@ -9,7 +9,7 @@ Every question in this phase MUST be asked via the `AskUserQuestion` tool so the
 - Batch up to 4 questions per tool call; chain additional calls for the rest.
 - Give each question 2-4 mutually exclusive options: short label + a description stating the implication of choosing it. The tool adds "Other" automatically — don't add your own.
 - Use `multiSelect: true` when choices aren't mutually exclusive.
-- Use the `header` field as a short chip matching the hat or topic: "Platform", "Feel", "Risks", "Done means", "Repo", "Budget".
+- Use the `header` field as a short chip matching the hat or topic: "Platform", "Feel", "Risks", "Done means", "Repo". Never ask about budget or usage.
 
 ## Pre-Check: Prompt Quality Audit
 

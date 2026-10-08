@@ -34,12 +34,12 @@ You are the <role>. Working directory: <absolute-path>.
 
 Role sentence examples:
 - Implementer: "You implement exactly what the spec says — nothing more."
-- Scout: "You gather facts and return them verbatim — you do not recommend or decide."
+- Reader: "You gather facts and return them verbatim — you do not recommend or decide."
 - Verifier: "You run the DoD check and report what you observe — you do not review code."
 
 ---
 
-### Anti-hallucination block (scouts and any agent reading code)
+### Anti-hallucination block (readers and any agent reading code)
 
 ```xml
 <investigate_before_answering>
@@ -63,7 +63,7 @@ guessing. Do not ask clarifying questions; resolve ambiguity by reading the spec
 
 ---
 
-### Conservative default for scouts and verifiers
+### Conservative default for readers and verifiers
 
 ```xml
 <do_not_act_before_instructions>
@@ -74,7 +74,7 @@ reading, measuring, and reporting. Only proceed with edits when the spec require
 
 ---
 
-### Parallel tool calls (implementers and scouts)
+### Parallel tool calls (implementers and readers)
 
 ```xml
 <use_parallel_tool_calls>
@@ -179,7 +179,7 @@ Use consistent tag names across all agent prompts in the session.
 
 | Agent type | Include |
 |------------|---------|
-| Scout | `<investigate_before_answering>`, `<do_not_act_before_instructions>`, `<use_parallel_tool_calls>` |
+| Reader | `<investigate_before_answering>`, `<do_not_act_before_instructions>`, `<use_parallel_tool_calls>` |
 | Implementer | `<default_to_action>`, `<scope_discipline>`, `<no_hardcoding>`, `<use_parallel_tool_calls>`, `<context_continuity>`, self-check, reversibility gate |
 | Verifier | `<do_not_act_before_instructions>`, self-check |
 | Creative Director (Planner) | None of the above — it works from interrogation answers, not templated blocks |

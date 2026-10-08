@@ -42,7 +42,6 @@ interactive choice dialogue:
 - What constraints matter? (platform, performance, aesthetic)
 - How do we know it's done?
 - Are there decision forks to resolve?
-- What's your token budget for this?
 
 This phase prevents the biggest token waste: building the wrong thing.
 

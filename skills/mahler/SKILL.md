@@ -22,7 +22,7 @@ Quick reference:
 1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions via the `AskUserQuestion` dialogue tool (never plain text), prompt quality audit, GitHub setup (Blue Hat)
 2. **Phase 1 — Direct** — spawn the Planner (strongest available model: fable → opus → sonnet-high → self) for creative direction + task decomposition into issue-ready specs
 3. **Phase 2 — PRD Approval** — present the plan as a PRD in chat, hard stop until the user explicitly approves
-4. **Phase 3 — GitHub Pipeline** — scouts → spec in issue body → dispatch by pointer → verifier → escalation ladder
+4. **Phase 3 — GitHub Pipeline** — readers → spec in issue body → dispatch by pointer → verifier → escalation ladder
 5. **Phase 4 — Integrate** — dedicated Reviewer agent (fresh context) reads the full merged diff for correctness bugs, resource leaks, and cross-task conflicts; verify success criteria; surface summary
 
 ## Model Routing Quick Reference
@@ -35,7 +35,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the d
 - **Never dispatch before approval**: no issue is created and no agent is spawned until the user approves the Phase 2 PRD
 - **Cheapest capable model wins**: don't use Opus for Haiku work
 - **Parallel when possible**: independent tasks run simultaneously
-- **Budget-aware execution**: Phase 0 asks about remaining budget; the PRD states an execution mode (Full Orchestra / Chamber / Solo) the user approves — on a tight budget the orchestrator implements the PRD itself instead of spawning a fleet (see `references/execution-modes.md`)
+- **Lean by default**: never asks about budget. Mode follows task shape (Chamber default, Solo for small tasks); the PRD approval offers a bigger and a leaner version with token estimates. Think high (strongest model plans and judges), read mid (sonnet-low readers digest context), do cheap (sonnet implements, haiku for mechanical) — see `references/execution-modes.md`
 - **Context budget**: every subagent has a tool-call cap and output-capping rules; long tasks relay across fresh agents through handoff files instead of growing one context (see `references/context-budget.md`)
 - **Availability over assumption**: the model hierarchy is a fallback ladder, not a requirement — planner fable→opus→sonnet-high→self, opus→sonnet-high, haiku→sonnet-low, nothing→Solo
 - **Degrade gracefully**: the 5-phase structure, PRD stop, and issue-first survive every mode; only the number of agents changes

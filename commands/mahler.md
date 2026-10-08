@@ -32,7 +32,8 @@ Six Hats gives you coverage across creative and technical standpoints:
 - Does this project have a GitHub repo? Should we create one?
 - How do you want to version this? (branches per feature, direct to main, tags at milestones?)
 - Any existing issue tracker or project board to use?
-- **Budget check:** "How's your usage budget — plenty (>40% weekly left), moderate (15–40%), or tight (<15%)? This decides whether I run a full agent pipeline or implement more myself." Mahler cannot read the user's quota — this question and runtime signals are the only sources. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for how the answer maps to a mode.
+
+**Never ask about budget, usage or remaining limits.** Every run is token-lean by default; the mode follows from the task shape (see `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`). If the user volunteers "tight" or "go wide", that wins.
 
 Ask 5–9 questions total spanning the hats. **MANDATORY: every interrogation question goes through the `AskUserQuestion` tool** — the interactive "choose an option" dialogue — never as plain text in your response. Batch up to 4 questions per call with 2-4 concrete options each (the tool adds "Other" automatically); make a second call for the remaining questions. Do NOT proceed until the user confirms direction. Surface forks the same way: an `AskUserQuestion` with one option per path, tradeoff in the description.
 
@@ -59,7 +60,7 @@ The Creative Director's job:
 5. If the pattern is **graph**, add one task that stands up the persistent store (typed JSON or SQLite, provenance on every edge — see architecture-patterns.md), with the entities and edges it will hold.
 6. Return a structured task list — not implementation, just the plan
 
-**The Creative Director never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet scout first: specific question, specific format expected back. The Creative Director decides; scouts provide facts only.
+**The Creative Director never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet-low reader first: specific question, specific format expected back. The Creative Director decides; readers provide facts only.
 
 **Before spawning anything, settle the model ladder.** The planner/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: planner: fable→opus→sonnet-high→orchestrator itself; opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
 
@@ -109,7 +110,7 @@ Turn the Creative Director's execution plan into a short PRD and show it to the 
 - N issues will be created, one per task above
 
 ## Execution Mode
-- Mode: [Full Orchestra / Chamber / Solo] (budget: [user's Phase 0 answer])
+- Mode: [Solo / Chamber / Full Orchestra] ([why: task shape, or user's words])
 - Available models this session: [ladder result, with fallbacks noted]
 - Agent count: [N agents] — [or "none; I implement the PRD myself in one pass" for Solo]
 - Spawn overhead: ~[o]k of the ~[sum]k total (~[o/sum]%). If over ~1/3, the plan is collapsed before this PRD is shown — see the agent-justification rule in `execution-modes.md`.
@@ -118,7 +119,15 @@ Turn the Creative Director's execution plan into a short PRD and show it to the 
 
 Est. Tokens is a rough order-of-magnitude call (spec read + implementation + report, per task), not a metered guarantee — state it as an estimate, not a promise. Approving the PRD approves the spend shape too — mode, models, agent count, and token estimate. If the user overrides the mode ("go full pipeline anyway"), that wins.
 
-Ask via `AskUserQuestion`: "Approve this PRD to proceed?" with options like "Approve" / "Approve with changes" / "Revise" (describe what each means in the option description).
+Ask via `AskUserQuestion` — **one question that approves the plan and picks its size at once** (this is the only place Mahler offers a bigger version; it never asks about budget in Phase 0):
+
+> "Approve this PRD — which size?"
+> 1. **Approve — [recommended mode] (Recommended)** · ~[sum]k tokens · [agent count]
+> 2. **Approve bigger — [next mode up]** · ~[sum]k tokens · *what it adds in concrete terms* (e.g. "per-task verifiers, parallel worktrees for the shader and UI groups, a dedicated reviewer")
+> 3. **Approve leaner — [next mode down]** · ~[sum]k tokens · *what it drops* (e.g. "no subagents, one verification at the end, self-review")
+> 4. **Revise** · tell me what to change
+
+Rules: estimate every option from the same task table, so the numbers are comparable. Name what the bigger version actually buys for *this* task; if it buys nothing (single-call or Solo-shaped tasks), drop that option. Omit the leaner option when already Solo. "Other" covers edits.
 
 - If the user requests changes: revise and re-present. Do not proceed on a partial "looks fine but—" — resolve the "but" first.
 - If the user approves: proceed to Phase 3.
@@ -135,14 +144,14 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/github-pipeline.md` for the
 Pipeline:
 
 ```
-scouts → spec in issue body → dispatch by pointer → verifier → acceptance → next
+readers → spec in issue body → dispatch by pointer → verifier → acceptance → next
 (Sonnet)   (Planner writes)    (implementer)         (fresh context)
 ```
 
-**3.1 — Scouts (parallel Sonnet agents)**
-- One scout per area of needed context (codebase map, backlog review, API surface)
-- Each scout gets a specific question and a required format: files, lines, contracts, traps
-- Scouts return facts only. No recommendations. No "best option." The Creative Director decides.
+**3.1 — Readers (parallel Sonnet-low agents; Haiku for pure locate/grep)**
+- One reader per area of needed context (codebase map, docs, backlog review, API surface). The thinker never bulk-reads: >~300 lines or >3 files goes to a reader
+- Each reader gets a specific question and a required format: files, lines, contracts, traps
+- Readers return facts only. No recommendations. No "best option." The Creative Director decides.
 
 **3.2 — Spec into issue body**
 The Creative Director writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
@@ -245,7 +254,7 @@ Then:
 Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/prompt-quality.md` for:
 - Phase 0 checklist: how to audit the original user request for clarity gaps before writing interrogation questions
 - Dispatch prompt templates: XML blocks to compose into each subagent's prompt (anti-hallucination, action default, scope discipline, parallel tools, context continuity, self-check, reversibility gate)
-- Choosing which blocks apply to scouts vs. implementers vs. verifiers
+- Choosing which blocks apply to readers vs. implementers vs. verifiers
 
 ## Subagent Operations
 
@@ -266,15 +275,16 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 - **Context is the real cost.** Each turn re-reads the whole context, so cache reads grow with turns × context size. Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/context-budget.md` before Phase 3. Every dispatch carries the budget lines; long tasks are split across fresh agents via handoff files, never grown in one agent.
 - **Orchestrator stays thin.** No browser checks or debugging in main; dispatch a verifier. When main context passes ~100k after a phase, write a handoff to the scratchpad and suggest `/compact` or a fresh session in one line.
-- **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a scout + implementer + verifier is the most common waste.
+- **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a reader + implementer + verifier is the most common waste.
 - **Every agent justifies its overhead.** The agent-justification rule in `execution-modes.md` applies in all modes, Full Orchestra included: inline what is smaller than a spawn, merge adjacent tasks by default, one verifier per group not per task, keep total spawn overhead under ~1/3 of the run.
 - The Creative Director does judgment only — never reads files, never runs commands, never writes code
-- Scouts bring facts; the Creative Director decides. Never delegate a decision to a scout.
+- **Think high, read mid, do cheap.** Thinking (plan, specs, review judgment) on the strongest model; bulk reading on sonnet-low readers that return ≤15-line digests; implementation on sonnet, mechanical work on haiku, opus only for shaders/architecture/hard debugging. Table in `execution-modes.md`.
+- Readers bring facts; the Creative Director decides. Never delegate a decision to a reader.
 - **Model and effort are routed independently, per task** — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`. Don't default every sonnet task to medium out of habit; a fully-resolved rename on sonnet is still low effort.
 - `ultrathink` / `xhigh` effort: never by default, for any agent. The Creative Director is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
 - Batch simple tasks into one Haiku agent; don't spawn many
 - Tasks < 20 lines of straightforward code: handle inline, don't spawn
-- When limit is low: drop an execution mode (Orchestra → Chamber → Solo, see execution-modes.md) — collapse agents and lower effort where the task tolerates it, never skip specs or the PRD stop to compensate
+- When the limit bites (rate-limit error, failed spawn, user says so): drop an execution mode (Orchestra → Chamber → Solo, see execution-modes.md) — collapse agents and lower effort where the task tolerates it, never skip specs or the PRD stop to compensate
 
 ---
 
@@ -282,15 +292,15 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 
 Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md` for the full logic. The short version:
 
-| Mode | Budget | Shape |
-|------|--------|-------|
-| 🎻 Full Orchestra | >40% weekly left | Standard pipeline: scouts, per-task implementers, per-task verifiers, reviewer |
-| 🎼 Chamber | 15–40%, or unknown | No scouts; small tasks batched into fewer agents; verification batched per group; reviewer doubles as final verifier |
-| 🎹 Solo | <15% | No subagent fleet — orchestrator implements the approved PRD itself in one pass, one verification at the end, one tracking issue, granular commits, self-review against the reviewer axes |
+| Mode | When | Shape |
+|------|------|-------|
+| 🎼 Chamber | **Default** | Sonnet readers digest context; small tasks batched; verification per group; reviewer doubles as final verifier |
+| 🎻 Full Orchestra | Picked as "Approve bigger" at the PRD stop | Readers, per-task implementers, per-group verifiers, reviewer, parallel worktrees |
+| 🎹 Solo | Single call or ≤ ~3 small tasks; or the limit bites | No subagent fleet — orchestrator implements the approved PRD itself in one pass, one verification at the end, one tracking issue, granular commits, self-review against the reviewer axes |
 
 The driver is overhead math: every subagent pays fixed context overhead (system prompt, spec read, report) before doing any work. A 14-agent fleet on a tight budget burns more on overhead than on implementation — collapse agents, never planning. The 5-phase structure, the PRD approval stop, and issue-first always survive; only the number of bodies changes.
 
-**Mid-run:** budget drains while working. On a rate-limit error, a failed spawn, or the user flagging it — finish the in-flight agent, drop one mode, tell the user in one line. Never silently keep spawning into a limit.
+**Mid-run:** the limit drains while working. On a rate-limit error, a failed spawn, or the user flagging it — finish the in-flight agent, drop one mode, tell the user in one line. Never silently keep spawning into a limit.
 
 ---
 
