@@ -20,9 +20,9 @@ The orchestrator provides this path explicitly in every dispatch prompt. The scr
 
 The digest a subagent sends back is a **typed block with fixed fields**, not free prose. The orchestrator's context stays small because it consumes fields, not paragraphs it has to re-parse; Phase 4 integration reads the same shape from every task. Free text only for something the schema has no field for, capped at 5 lines under the block.
 
-**Scout**
+**Reader**
 ```yaml
-scout:
+reader:
   question: <the question you were given>
   findings: [<fact with file:line or coordinate>, ...]
   contracts: [<signature / data shape found>, ...]
@@ -83,7 +83,7 @@ An agent finishes but sends only an idle notification with no digest.
 
 **If agent is dead:** Read `<scratchpad>/reports/<agent-name>.md` directly. The file should exist if the agent followed protocol before dying.
 
-**If file also missing:** Spawn a recovery scout: `git log --oneline -10 && git status` — partial work is often correct and should be accepted and continued, not redone.
+**If file also missing:** Spawn a recovery reader: `git log --oneline -10 && git status` — partial work is often correct and should be accepted and continued, not redone.
 
 ## Session Death Respawn
 
@@ -113,14 +113,14 @@ Do NOT open a visible browser window.
 
 ## Judgment Boundary
 
-Scouts and implementers get eyes and hands. Never the head.
+Readers and implementers get eyes and hands. Never the head.
 
-**What scouts may do:** find, list, measure, quote, count, grep, run, check
-**What scouts may NOT do:** choose, recommend, rank, prioritize, conclude, decide
+**What readers may do:** find, list, measure, quote, count, grep, run, check
+**What readers may NOT do:** choose, recommend, rank, prioritize, conclude, decide
 
-If a scout returns a recommendation: treat it as raw material. Re-derive the decision yourself. Don't copy scout recommendations into specs without your own reasoning.
+If a reader returns a recommendation: treat it as raw material. Re-derive the decision yourself. Don't copy reader recommendations into specs without your own reasoning.
 
-When a scout needs to present N options: return all N with objective attributes (dates, sizes, line counts, dependency counts). You pick.
+When a reader needs to present N options: return all N with objective attributes (dates, sizes, line counts, dependency counts). You pick.
 
 ## Effort Routing
 
