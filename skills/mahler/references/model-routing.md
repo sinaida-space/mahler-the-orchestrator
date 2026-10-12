@@ -50,10 +50,16 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 
 ## Detailed Routing by Domain
 
+### Reading context
+| Task | Model | Rationale |
+|------|-------|-----------|
+| Map a codebase, digest docs/PDFs/logs, survey a backlog | sonnet (low) | Cheap bulk reading; returns a ≤15-line digest so the thinker's context stays small |
+| Find files, grep, list, count | haiku (low) | Zero judgment |
+
 ### Creative / Conceptual
 | Task | Model | Rationale |
 |------|-------|-----------|
-| Brainstorm concepts, visual direction | planner | Strongest available model (fable → opus → sonnet-high) |
+| Brainstorm concepts, visual direction | planner | Strongest available model (opus → sonnet-high) |
 | Art references, mood boards, naming | planner | Judgment work, no code |
 | Task decomposition, project planning | planner | Planning decides quality downstream; always the top available rung |
 
@@ -114,7 +120,7 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 **Model escalation:**
 If a haiku agent returns an error or incomplete result, escalate to sonnet.
 If a sonnet agent hits a wall on a subtask, escalate to opus.
-Planner work is never escalated: it already runs on the strongest available model (fable → opus → sonnet-high → the orchestrator itself). An unavailable rung drops one step for the session.
+Planner work is never escalated: it already runs on the strongest available model (opus → sonnet-high → the orchestrator itself). An unavailable rung drops one step for the session.
 
 **Effort escalation (independent of model):**
 First failure → same model, raise effort one level before considering a model change.
