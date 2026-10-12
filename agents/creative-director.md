@@ -1,5 +1,5 @@
 ---
-description: Creative Director (Planner) agent, run on the strongest model available this session (fable → opus → sonnet; the orchestrator passes the model at spawn). Brainstorms concepts, decomposes tasks, and routes work to the optimal model tier and effort level. Used by the /mahler orchestrator.
+description: Creative Director (Planner) agent, run on the strongest model available this session (opus → sonnet; the orchestrator passes the model at spawn). Brainstorms concepts, decomposes tasks, and routes work to the optimal model tier and effort level. Used by the /mahler orchestrator.
 model: opus
 capabilities:
   - Creative concept development and visual direction

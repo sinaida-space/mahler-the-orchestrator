@@ -26,7 +26,7 @@ You're on a limited token budget (Pro plan, anyone?). You have a complex project
 - Handling complex work (shaders, architecture) with Opus
 - Handling standard stuff (CSS, tests, docs) with Sonnet
 - Handling mechanical work (formatting, boilerplate) with Haiku
-- Orchestrating everything with the strongest model your plan offers (Fable if available, otherwise Opus) for creative direction
+- Orchestrating everything with the strongest model your plan offers (the chat's own model and effort) for creative direction
 
 Result: same quality, way fewer tokens burned.
 
@@ -55,7 +55,7 @@ The Planner synthesizes your answers and produces:
 - A decomposition plan, only as deep as the pattern needs
 - Model and effort routing for each task
 
-The Planner runs on the strongest model your subscription can spawn, picked at run time: Fable → Opus → Sonnet (high effort) → Mahler itself. On Pro that means Opus (currently Opus 5.5). Model aliases resolve to the newest release of each family, so a new Opus is picked up without any change to Mahler.
+The Planner runs on the strongest model your subscription can spawn, picked at run time: Opus → Sonnet (high effort) → Mahler itself. On Pro that means Opus (currently Opus 5.5). Model aliases resolve to the newest release of each family, so a new Opus is picked up without any change to Mahler.
 
 ### Phase 2: PRD approval
 Mahler turns the plan into a short PRD — scope, architecture, task table, token
@@ -223,7 +223,7 @@ If you work with interactive projections, TouchDesigner, shaders, and web—this
 
 - **Requires Claude Code** (the CLI or IDE extension)
 - **Model switching** needs Claude Pro/Max (or API). On Pro plan? Mahler degrades gracefully—same workflow, one model
-- **Planner model** is chosen by availability: Fable → Opus → Sonnet → Mahler itself. Fable is not on Pro, so Pro runs planning on Opus
+- **Planner model** is the chat's own model and effort, falling back to Opus → Sonnet → Mahler itself only if rejected
 - **Not a replacement for you** — Mahler routes work, but your creative decisions drive the direction
 
 ---

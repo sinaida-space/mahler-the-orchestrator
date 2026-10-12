@@ -6,7 +6,7 @@ Mahler adapts two things to the session's real conditions: **how much orchestrat
 
 The user always wants to save tokens. Mahler **never asks** how much budget or weekly limit is left; it cannot read the quota, and the question itself costs a round-trip and an interruption. Every run is token-lean by default.
 
-Mode comes from the task, not from a budget answer. The user still gets the **choice of a bigger version**: the Phase 2 approval question offers the recommended mode plus the next size up and down, each with its token estimate and what it adds or drops. That is the only place size is asked.
+Mode comes from the task, not from a budget answer. The Phase 2 approval question always offers the **most token-efficient mode** as a choice (Solo when it can carry the task, otherwise the leanest viable one), plus the recommended mode and one bigger option, each with its token estimate and what it adds or drops. That is the only place size is asked.
 
 1. **The user says so** — "tight", "go wide", "solo", "full pipeline". Always wins.
 2. **Task shape** — the architecture pattern from Phase 1 picks the mode (see table below).
@@ -24,7 +24,7 @@ The cost split that makes Mahler worth running. Every token the orchestrator rea
 
 | Work | Model | Effort | Why |
 |------|-------|--------|-----|
-| **Think** — interrogation, pattern choice, decomposition, specs, fork resolution, final review judgment | strongest available (fable → opus → sonnet-high) | high | Quality is decided here; it is short output over a small, curated context |
+| **Think** — interrogation, pattern choice, decomposition, specs, fork resolution, final review judgment | strongest available (opus → sonnet-high) | high | Quality is decided here; it is short output over a small, curated context |
 | **Read** — map a codebase, digest docs/PDFs/long files, read logs, survey a backlog, inspect an existing project | sonnet | low | Sonnet reads bulk context at a fraction of the price and returns a ≤15-line digest; the thinker only ever sees the digest |
 | **Locate** — find files, list, grep, count, check a path exists | haiku | low | Zero judgment |
 | **Do** — standard implementation, tests, docs, CSS/HTML/JS | sonnet | medium | The default implementer |
@@ -87,11 +87,11 @@ A run that started as Chamber may need to land Solo. Watch for the runtime signa
 
 ## Model availability ladder
 
-The planner/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subscriptions differ; models come and go. At Phase 1, before spawning anything, determine what's actually available — from what the user said, from the session's own model, and from spawn failures — and route with fallbacks:
+The planner/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subscriptions differ; models come and go. Docs and README tier claims are never evidence of availability. At Phase 1, the planner runs on the chat's own model and effort; if the spawn is rejected as unavailable, drop one rung and record it. Other tiers are established from the session's own model and from spawn failures, and routed with fallbacks:
 
 | Ideal | If unavailable → | Adjustment |
 |-------|------------------|------------|
-| planner (creative direction) | strongest spawnable model: fable → opus → sonnet at **high** → orchestrator does Phase 1 itself | Planning is where quality is decided, so it always gets the top available rung; aliases resolve to the newest release in each family |
+| planner (creative direction) | the session's own model and effort; if rejected as unavailable: opus → sonnet at **high** → orchestrator does Phase 1 itself | The planner runs on what the chat is set to, never above it; aliases resolve to the newest release in each family |
 | opus (complex/judgment work) | sonnet at **high** effort | Sonnet-high covers most opus-tier tasks; flag genuinely hard math/architecture to the user as elevated-risk |
 | sonnet (standard work) | opus at **medium** effort if that's what exists, else current model | Paying more per token but not more thinking |
 | haiku (mechanical work) | sonnet at **low** effort | Low effort keeps it from over-thinking mechanical work |
@@ -99,7 +99,7 @@ The planner/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subsc
 
 Two rules on top of the ladder:
 
-- **Cost ranking:** haiku < sonnet < opus ≈ fable per token. Don't ask the user about metering; if they volunteer that their plan meters differently, route to whatever is cheapest *for them*. The Prime Directive is unchanged: cheapest resource that reliably completes the task — "resource" now meaning model × effort × the user's actual metering.
+- **Cost ranking:** haiku < sonnet < opus per token. Don't ask the user about metering; if they volunteer that their plan meters differently, route to whatever is cheapest *for them*. The Prime Directive is unchanged: cheapest resource that reliably completes the task — "resource" now meaning model × effort × the user's actual metering.
 - **A failed spawn is data.** If a model errors as unavailable, update the ladder for the rest of the session — don't retry it per task.
 
 ## Where this surfaces in the PRD
@@ -109,7 +109,7 @@ The Phase 2 PRD gains two lines the user approves explicitly:
 ```markdown
 ## Execution Mode
 - Mode: Chamber (default; task is a chain of 4 tasks)
-- Available models this session: sonnet, haiku (fable, opus unavailable → planner and opus-tier tasks run on sonnet-high)
+- Available models this session: sonnet, haiku (opus unavailable → planner and opus-tier tasks run on sonnet-high)
 - Agent count: ~4 (2 batched implementers, 1 batched verifier, 1 reviewer) instead of 9
 ```
 

@@ -50,7 +50,7 @@ Stop when you can answer all five:
 
 Spawn the Creative Director on the **strongest model available this session** (the Planner). Read `${CLAUDE_PLUGIN_ROOT}/agents/creative-director.md`.
 
-**Choosing the Planner model.** Walk the planner ladder top-down and take the first model this subscription can actually spawn: `fable` → `opus` → `sonnet` (high effort) → the orchestrator itself. Pass it explicitly as the Agent tool's `model` parameter; family aliases (`opus`, `sonnet`) always resolve to the newest release of that family, so the ladder stays current without edits. Default when nothing is known: `opus` (available on Pro and above; `fable` is not on Pro). Evidence of availability: what the user said, the session's own model (if the session runs on it, it is available), past spawn failures. A failed spawn drops one rung for the rest of the session.
+**Choosing the Planner model: the model and effort the chat is running on.** The planner starts with the session's own model and effort level, as set in the chat; it is never upgraded above them and never assumed from docs or the skill text. Pass that model explicitly as the Agent tool's `model` parameter and that effort level explicitly. Family aliases (`opus`, `sonnet`) resolve to the newest release of that family. If the session runs on a model the spawn rejects as unavailable, drop one rung (`opus` → `sonnet` at high effort → the orchestrator itself), record it, and retry once. A past spawn failure for this session is final. Report the planner model and effort in the PRD (e.g. "Planner: opus, effort high (session setting)").
 
 The Creative Director's job:
 1. Synthesize interrogation answers into a creative/technical vision
@@ -62,7 +62,7 @@ The Creative Director's job:
 
 **The Creative Director never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet-low reader first: specific question, specific format expected back. The Creative Director decides; readers provide facts only.
 
-**Before spawning anything, settle the model ladder.** The planner/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: planner: fable→opus→sonnet-high→orchestrator itself; opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
+**Before spawning anything, settle the model ladder.** The planner/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: planner: opus→sonnet-high→orchestrator itself; opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
 
 If no model above the orchestrator's own is spawnable, perform this phase yourself with the same logic.
 
@@ -123,11 +123,11 @@ Ask via `AskUserQuestion` — **one question that approves the plan and picks it
 
 > "Approve this PRD — which size?"
 > 1. **Approve — [recommended mode] (Recommended)** · ~[sum]k tokens · [agent count]
-> 2. **Approve bigger — [next mode up]** · ~[sum]k tokens · *what it adds in concrete terms* (e.g. "per-task verifiers, parallel worktrees for the shader and UI groups, a dedicated reviewer")
-> 3. **Approve leaner — [next mode down]** · ~[sum]k tokens · *what it drops* (e.g. "no subagents, one verification at the end, self-review")
+> 2. **Approve most token-efficient — [leanest viable mode]** · ~[sum]k tokens · *what it drops* (e.g. "no subagents, one verification at the end, self-review")
+> 3. **Approve bigger — [next mode up]** · ~[sum]k tokens · *what it adds in concrete terms* (e.g. "per-task verifiers, parallel worktrees for the shader and UI groups, a dedicated reviewer")
 > 4. **Revise** · tell me what to change
 
-Rules: estimate every option from the same task table, so the numbers are comparable. Name what the bigger version actually buys for *this* task; if it buys nothing (single-call or Solo-shaped tasks), drop that option. Omit the leaner option when already Solo. "Other" covers edits.
+Rules: estimate every option from the same task table, so the numbers are comparable. The most token-efficient option is always offered, even when it is also the recommended one: it is Solo whenever Solo can carry the task at acceptable quality, otherwise the leanest mode that still clears the quality bar. If the recommended mode is already the leanest, label option 2 "Approve most token-efficient — same as recommended" rather than dropping it. Name what the bigger version actually buys for *this* task; if it buys nothing (single-call or Solo-shaped tasks), drop option 3. "Other" covers edits.
 
 - If the user requests changes: revise and re-present. Do not proceed on a partial "looks fine but—" — resolve the "but" first.
 - If the user approves: proceed to Phase 3.
