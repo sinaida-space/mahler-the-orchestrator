@@ -76,7 +76,7 @@ If you get "unknown command," you may need to:
 
 ### "Model not available"
 - Pro plan? Mahler degrades gracefully using your current model
-- Check your plan — Fable is not on Pro; the Planner falls back to Opus (then Sonnet) automatically
+- The Planner starts on the chat's own model and effort and falls back only if the spawn is rejected
 
 ---
 

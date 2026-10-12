@@ -1,6 +1,6 @@
 ---
 name: mahler
-description: Multi-model orchestrator that maximizes output quality at minimum token cost. Interrogates the user first, then uses the strongest available model (Fable if the plan has it, else Opus) as creative director to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
+description: Multi-model orchestrator that maximizes output quality at minimum token cost. Interrogates the user first, then uses the strongest model that actually spawns on this subscription (the chat's own model and effort) as creative director to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
 ---
 
 # Mahler Orchestrator Skill
@@ -20,7 +20,7 @@ The orchestrator follows a strict 5-phase protocol defined in the `/mahler` comm
 
 Quick reference:
 1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions via the `AskUserQuestion` dialogue tool (never plain text), prompt quality audit, GitHub setup (Blue Hat)
-2. **Phase 1 — Direct** — spawn the Planner (strongest available model: fable → opus → sonnet-high → self) for creative direction + task decomposition into issue-ready specs
+2. **Phase 1 — Direct** — spawn the Planner (the chat's own model and effort; fallback opus → sonnet-high → self) for creative direction + task decomposition into issue-ready specs
 3. **Phase 2 — PRD Approval** — present the plan as a PRD in chat, hard stop until the user explicitly approves
 4. **Phase 3 — GitHub Pipeline** — readers → spec in issue body → dispatch by pointer → verifier → escalation ladder
 5. **Phase 4 — Integrate** — dedicated Reviewer agent (fresh context) reads the full merged diff for correctness bugs, resource leaks, and cross-task conflicts; verify success criteria; surface summary
@@ -37,5 +37,5 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for the d
 - **Parallel when possible**: independent tasks run simultaneously
 - **Lean by default**: never asks about budget. Mode follows task shape (Chamber default, Solo for small tasks); the PRD approval offers a bigger and a leaner version with token estimates. Think high (strongest model plans and judges), read mid (sonnet-low readers digest context), do cheap (sonnet implements, haiku for mechanical) — see `references/execution-modes.md`
 - **Context budget**: every subagent has a tool-call cap and output-capping rules; long tasks relay across fresh agents through handoff files instead of growing one context (see `references/context-budget.md`)
-- **Availability over assumption**: the model hierarchy is a fallback ladder, not a requirement — planner fable→opus→sonnet-high→self, opus→sonnet-high, haiku→sonnet-low, nothing→Solo
+- **Availability over assumption**: the model hierarchy is a fallback ladder, not a requirement — planner = session model and effort (fallback opus→sonnet-high→self), opus→sonnet-high, haiku→sonnet-low, nothing→Solo
 - **Degrade gracefully**: the 5-phase structure, PRD stop, and issue-first survive every mode; only the number of agents changes
