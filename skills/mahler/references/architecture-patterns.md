@@ -9,7 +9,7 @@ reflex.
 
 | Task shape | Pattern | How Mahler runs it |
 |---|---|---|
-| One well-scoped output, quality is checkable in one pass | **single call** | one implementer, no scouts, no verifier fleet, no reviewer — the orchestrator checks the DoD itself |
+| One well-scoped output, quality is checkable in one pass | **single call** | one implementer, no readers, no verifier fleet, no reviewer — the orchestrator checks the DoD itself |
 | Output needs iterative revision against a rubric (copy, translation, security-sensitive code, schema or API design) | **reflection loop** | one implementer alternating draft and critique against an explicit rubric; or a role-separated proposer + critic pair for design-shaped outputs (see below); 2–4 iterations, hard cap, stop rule |
 | A fixed sequence of narrow transforms, each feeding the next | **chain** | ordered issues with a gate between each — the previous task's DoD is the next task's entry contract; a failed gate routes to a fallback, never forward |
 | Genuinely independent concerns needing different expertise or models | **multi-agent** | parallel implementers, one per file-disjoint group, merged by the orchestrator |
