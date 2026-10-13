@@ -168,7 +168,7 @@ Spec template (see github-pipeline.md for full version):
 - **Boundaries** — what NOT to do
 - **DoD + verification** — checklist + exact command to run
 
-Public-record rule (full text in github-pipeline.md): no persona instructions, no "your call" on creative questions, no orchestration chatter in issue or PR text. Role framing goes in the private dispatch envelope.
+Authorship rule (full text in github-pipeline.md): no persona instructions, no "your call" on creative questions, no orchestration chatter in issue or PR text. Role framing goes in the private dispatch envelope.
 
 Readiness test: can the implementer execute without opening any file for research?
 **Effort check:** if the spec still leaves a judgment call open, that's why effort is high — not an excuse to skip resolving the fork. Resolve what you can in the spec; leave high effort only for what genuinely can't be pre-resolved (math correctness, live debugging).

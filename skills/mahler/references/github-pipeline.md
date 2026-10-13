@@ -40,8 +40,8 @@ Don't add beyond the spec.)
 - Expected output: what you should see when it passes
 ```
 
-**Public record:** issues and PRs are often public and get read as the project's history.
-Write them as a brief from the author to an implementer:
+**Authorship in the record:** issues and PRs are the project's history. Write them as a
+brief from the author to an implementer, in the author's voice:
 - No role-play or persona instructions in the issue ("act as a curator", "you are an art
   director"). Role framing belongs in the dispatch envelope, which stays private.
 - Never hand a creative judgment to the implementer ("your call", "use your taste"). Delegation
@@ -49,8 +49,8 @@ Write them as a brief from the author to an implementer:
   "tune smoothing within 0.1–0.3, report the value, author approves on screen".
 - No orchestration chatter ("Solo-mode Mahler run", "Task 1/Task 2") in titles or bodies.
   Routing lives only in the `Model / Effort` line.
-- PR descriptions state what changed and which `Direction` it implements, and end with
-  "Reviewed by: <author>" once the user has checked it.
+- PR descriptions are one to three sentences in the author's first person: what changed and
+  which `Direction` it serves. No generated-by footer.
 
 **Readiness test:** Can the implementer execute without opening any file for research?
 If no → the spec is incomplete.
