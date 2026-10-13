@@ -158,14 +158,17 @@ The Creative Director writes the spec; a Sonnet hand runs `gh issue edit N --bod
 
 Spec template (see github-pipeline.md for full version):
 - **Model / Effort** — assigned tier and effort level, carried from the PRD (Phase 2 table); the dispatcher passes effort explicitly, it is never left to the implementer's default
+- **Direction (author)** — the user's own decision and why, quoted from the interview; aesthetic, content and positioning calls are never left to the implementer
 - **Goal** — one sentence: what the user sees after merge
 - **Context** — files and lines to touch; traps and gotchas
 - **Contract** — exact data formats, signatures, field names with example values
 - **Diagram** — ASCII/mermaid if 2+ components interact
-- **Resolved forks** — each decision + one-line rationale
+- **Resolved forks** — each decision + one-line rationale + who decided (author / technical default)
 - **Steps** — numbered plan by file
 - **Boundaries** — what NOT to do
 - **DoD + verification** — checklist + exact command to run
+
+Public-record rule (full text in github-pipeline.md): no persona instructions, no "your call" on creative questions, no orchestration chatter in issue or PR text. Role framing goes in the private dispatch envelope.
 
 Readiness test: can the implementer execute without opening any file for research?
 **Effort check:** if the spec still leaves a judgment call open, that's why effort is high — not an excuse to skip resolving the fork. Resolve what you can in the spec; leave high effort only for what genuinely can't be pre-resolved (math correctness, live debugging).

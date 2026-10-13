@@ -9,6 +9,10 @@ Issue-first orchestration. Every task becomes a GitHub issue with a complete spe
 independent axes, not one decision. Carried verbatim into the dispatch envelope; the
 implementer never picks its own effort.
 
+**Direction (author):** The user's decision in their own words, one to three lines, and why.
+Quote or closely paraphrase what they said in Phase 0–2. This is the creative or strategic
+call the task implements; the rest of the issue is how to build it.
+
 **Goal:** One sentence — what the user sees after merge.
 
 **Context:** Files and lines to change; traps (duplicates, generated files,
@@ -20,7 +24,9 @@ message/file formats, field names, error codes. With example values, not descrip
 **Diagram:** If the task involves data flow, call order, or 2+ components interacting —
 ASCII or mermaid inline. Skip for trivial single-file edits.
 
-**Resolved forks:** Each decision + one-line rationale. No open questions.
+**Resolved forks:** Each decision + one-line rationale + who made it (`author` or
+`technical default`). No open questions. Aesthetic, content, voice and positioning forks are
+always `author`; if the user has not decided one, ask them before the issue is written.
 
 **Steps:** Numbered plan by file.
 
@@ -33,6 +39,18 @@ Don't add beyond the spec.)
 - Exact command to run: `npm test`, `open index.html and click X`, `gh workflow view`
 - Expected output: what you should see when it passes
 ```
+
+**Public record:** issues and PRs are often public and get read as the project's history.
+Write them as a brief from the author to an implementer:
+- No role-play or persona instructions in the issue ("act as a curator", "you are an art
+  director"). Role framing belongs in the dispatch envelope, which stays private.
+- Never hand a creative judgment to the implementer ("your call", "use your taste"). Delegation
+  is allowed only for technical parameters, phrased as a bounded range the author reviews:
+  "tune smoothing within 0.1–0.3, report the value, author approves on screen".
+- No orchestration chatter ("Solo-mode Mahler run", "Task 1/Task 2") in titles or bodies.
+  Routing lives only in the `Model / Effort` line.
+- PR descriptions state what changed and which `Direction` it implements, and end with
+  "Reviewed by: <author>" once the user has checked it.
 
 **Readiness test:** Can the implementer execute without opening any file for research?
 If no → the spec is incomplete.
