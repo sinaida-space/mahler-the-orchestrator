@@ -1,6 +1,6 @@
 ---
 name: mahler
-description: Multi-model orchestrator that maximizes output quality at minimum token cost. Interrogates the user first, then uses the strongest model that actually spawns on this subscription (the chat's own model and effort) as creative director to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
+description: Multi-model orchestrator that maximizes output quality at minimum token cost. Interrogates the user first, then uses the strongest model that actually spawns on this subscription (the chat's own model and effort) as planner to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
 ---
 
 # Mahler Orchestrator Skill
@@ -20,7 +20,7 @@ The orchestrator follows a strict 5-phase protocol defined in the `/mahler` comm
 
 Quick reference:
 1. **Phase 0 — Interrogate** — Six Hats multi-perspective questions via the `AskUserQuestion` dialogue tool (never plain text), prompt quality audit, GitHub setup (Blue Hat)
-2. **Phase 1 — Direct** — spawn the Planner (the chat's own model and effort; fallback opus → sonnet-high → self) for creative direction + task decomposition into issue-ready specs
+2. **Phase 1 — Direct** — spawn the Planner (the chat's own model and effort; fallback opus → sonnet-high → self) for vision + task decomposition into issue-ready specs
 3. **Phase 2 — PRD Approval** — present the plan as a PRD in chat, hard stop until the user explicitly approves
 4. **Phase 3 — GitHub Pipeline** — readers → spec in issue body → dispatch by pointer → verifier → escalation ladder
 5. **Phase 4 — Integrate** — dedicated Reviewer agent (fresh context) reads the full merged diff for correctness bugs, resource leaks, and cross-task conflicts; verify success criteria; surface summary

@@ -46,13 +46,13 @@ Stop when you can answer all five:
 
 ---
 
-### Phase 1: Creative Direction (spawn the Planner)
+### Phase 1: Planning (spawn the Planner)
 
-Spawn the Creative Director on the **strongest model available this session** (the Planner). Read `${CLAUDE_PLUGIN_ROOT}/agents/creative-director.md`.
+Spawn the Planner on the **strongest model available this session** (the Planner). Read `${CLAUDE_PLUGIN_ROOT}/agents/planner.md`.
 
 **Choosing the Planner model: the model and effort the chat is running on.** The planner starts with the session's own model and effort level, as set in the chat; it is never upgraded above them and never assumed from docs or the skill text. Pass that model explicitly as the Agent tool's `model` parameter and that effort level explicitly. Family aliases (`opus`, `sonnet`) resolve to the newest release of that family. If the session runs on a model the spawn rejects as unavailable, drop one rung (`opus` → `sonnet` at high effort → the orchestrator itself), record it, and retry once. A past spawn failure for this session is final. Report the planner model and effort in the PRD (e.g. "Planner: opus, effort high (session setting)").
 
-The Creative Director's job:
+The Planner's job:
 1. Synthesize interrogation answers into a creative/technical vision
 2. **Pick the architecture pattern first, before any decomposition.** Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Name the pattern the task actually needs — single call, reflection loop, chain, multi-agent, or graph — and the one-line reason. Start at the cheapest pattern that satisfies the task; move up only for a specific, named failure the added structure buys down. If the answer is "single call" or "chain", the multi-agent fleet is not used — the PRD says so explicitly.
 3. Decompose work into discrete subtasks **only to the depth the pattern requires.** Merge adjacent tasks by default (see the agent-justification rule in `execution-modes.md`); a task smaller than its own spawn overhead is marked "inline", not an agent.
@@ -60,7 +60,7 @@ The Creative Director's job:
 5. If the pattern is **graph**, add one task that stands up the persistent store (typed JSON or SQLite, provenance on every edge — see architecture-patterns.md), with the entities and edges it will hold.
 6. Return a structured task list — not implementation, just the plan
 
-**The Creative Director never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet-low reader first: specific question, specific format expected back. The Creative Director decides; readers provide facts only.
+**The Planner never reads the codebase directly.** If it needs codebase context, dispatch a Sonnet-low reader first: specific question, specific format expected back. The Planner decides; readers provide facts only.
 
 **Before spawning anything, settle the model ladder.** The planner/opus/sonnet/haiku hierarchy is the ideal, not an assumption — determine what this subscription actually offers (user's statements, the session's own model, past spawn failures) and route with the fallback ladder in `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/execution-modes.md`: planner: opus→sonnet-high→orchestrator itself; opus→sonnet-high, haiku→sonnet-low, nothing spawnable→Solo mode. A failed spawn updates the ladder for the whole session — never retry an unavailable model per task.
 
@@ -72,13 +72,13 @@ If no model above the orchestrator's own is spawnable, perform this phase yourse
 
 **No GitHub issue is created and no agent is dispatched until the user explicitly approves this PRD.** This is a hard stop, not a formality — treat it like `ExitPlanMode`: present, then wait.
 
-Turn the Creative Director's execution plan into a short PRD and show it to the user in the chat (not in a file, not in an issue yet):
+Turn the Planner's execution plan into a short PRD and show it to the user in the chat (not in a file, not in an issue yet):
 
 ```markdown
 # PRD: <project name>
 
 ## Vision
-[1-2 sentences from the Creative Director's synthesis]
+[1-2 sentences from the Planner's synthesis]
 
 ## Architecture
 - Pattern: [single call / reflection loop / chain / multi-agent / graph] — [one-line reason]
@@ -151,10 +151,10 @@ readers → spec in issue body → dispatch by pointer → verifier → acceptan
 **3.1 — Readers (parallel Sonnet-low agents; Haiku for pure locate/grep)**
 - One reader per area of needed context (codebase map, docs, backlog review, API surface). The thinker never bulk-reads: >~300 lines or >3 files goes to a reader
 - Each reader gets a specific question and a required format: files, lines, contracts, traps
-- Readers return facts only. No recommendations. No "best option." The Creative Director decides.
+- Readers return facts only. No recommendations. No "best option." The Planner decides.
 
 **3.2 — Spec into issue body**
-The Creative Director writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
+The Planner writes the spec; a Sonnet hand runs `gh issue edit N --body "..."` and sets status to "In Progress" before dispatch.
 
 Spec template (see github-pipeline.md for full version):
 - **Model / Effort** — assigned tier and effort level, carried from the PRD (Phase 2 table); the dispatcher passes effort explicitly, it is never left to the implementer's default
@@ -171,7 +171,7 @@ Readiness test: can the implementer execute without opening any file for researc
 **Effort check:** if the spec still leaves a judgment call open, that's why effort is high — not an excuse to skip resolving the fork. Resolve what you can in the spec; leave high effort only for what genuinely can't be pre-resolved (math correctness, live debugging).
 
 **3.3 — Dispatch by pointer**
-Implementer prompt is a short envelope — no spec duplication. Effort is set explicitly at dispatch, from the PRD's Effort column, not inherited from the Creative Director's or the orchestrator's own setting:
+Implementer prompt is a short envelope — no spec duplication. Effort is set explicitly at dispatch, from the PRD's Effort column, not inherited from the Planner's or the orchestrator's own setting:
 ```
 You are the implementer. Working dir: <path>. Effort: <low|medium|high, from spec>.
 Read your spec: `gh issue view N`. Execute exactly. No scope creep.
@@ -201,7 +201,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md` for both 
 - **effort** is chosen independently of model: low for zero-judgment execution (renames, verifiers), medium as the default for a complete spec, high only where judgment survives into execution (math correctness, live debugging, an intentionally deferred tradeoff)
 
 **3.6 — Async spec-ahead**
-While an implementer works, the Creative Director writes specs for the next tasks in the queue — not waiting. Before dispatching a pre-written spec, do a one-line diff-check against the previous task's actual output.
+While an implementer works, the Planner writes specs for the next tasks in the queue — not waiting. Before dispatching a pre-written spec, do a one-line diff-check against the previous task's actual output.
 
 **3.7 — Fresh-context verifier per task**
 After each implementer finishes, spawn a separate Sonnet verifier with a clean context, always at **low effort** — it executes a command and reports, it doesn't interpret:
@@ -234,7 +234,7 @@ The final pipeline task is a dedicated review issue. Read `${CLAUDE_PLUGIN_ROOT}
 
 **This is a distinct role from the verifier.** The per-task verifier (Phase 3.7) only ran a DoD command and reported pass/fail — it never read code for quality, and it never sees the diff as a whole. The reviewer does the opposite: fresh context, never the implementer of anything in the diff, reads the **full merged diff** from the pipeline's start commit — this is the only place cross-task conflicts surface, since each task was verified in isolation.
 
-1. The Creative Director writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
+1. The Planner writes the review spec: which axes matter for this project (default axes if unspecified: correctness bugs, resource leaks, cross-feature conflicts, security — see reviewer.md)
 2. Create the review issue with that spec, same as any other task
 3. Dispatch the reviewer: **sonnet, high effort** — review is judgment-heavy, never route it to low
 4. Reviewer runs **Step 0 — the deterministic pass** (build / lint / types / tests / prose against merged HEAD) before reading any code; a failure there is the top finding, since each task was verified only in isolation — see reviewer.md
@@ -277,11 +277,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/subagent-ops.md` for:
 - **Orchestrator stays thin.** No browser checks or debugging in main; dispatch a verifier. When main context passes ~100k after a phase, write a handoff to the scratchpad and suggest `/compact` or a fresh session in one line.
 - **Pick the pattern before the fleet.** Phase 1 names an architecture (single call / loop / chain / multi-agent / graph) before decomposing — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/architecture-patterns.md`. Most tasks are not multi-agent work. Decomposing a single-call task into a reader + implementer + verifier is the most common waste.
 - **Every agent justifies its overhead.** The agent-justification rule in `execution-modes.md` applies in all modes, Full Orchestra included: inline what is smaller than a spawn, merge adjacent tasks by default, one verifier per group not per task, keep total spawn overhead under ~1/3 of the run.
-- The Creative Director does judgment only — never reads files, never runs commands, never writes code
+- The Planner does judgment only — never reads files, never runs commands, never writes code
 - **Think high, read mid, do cheap.** Thinking (plan, specs, review judgment) on the strongest model; bulk reading on sonnet-low readers that return ≤15-line digests; implementation on sonnet, mechanical work on haiku, opus only for shaders/architecture/hard debugging. Table in `execution-modes.md`.
-- Readers bring facts; the Creative Director decides. Never delegate a decision to a reader.
+- Readers bring facts; the Planner decides. Never delegate a decision to a reader.
 - **Model and effort are routed independently, per task** — read `${CLAUDE_PLUGIN_ROOT}/skills/mahler/references/model-routing.md`. Don't default every sonnet task to medium out of habit; a fully-resolved rename on sonnet is still low effort.
-- `ultrathink` / `xhigh` effort: never by default, for any agent. The Creative Director is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
+- `ultrathink` / `xhigh` effort: never by default, for any agent. The Planner is always high (never higher). Implementers are medium by default, high only when the spec leaves genuine judgment for execution time.
 - Batch simple tasks into one Haiku agent; don't spawn many
 - Tasks < 20 lines of straightforward code: handle inline, don't spawn
 - When the limit bites (rate-limit error, failed spawn, user says so): drop an execution mode (Orchestra → Chamber → Solo, see execution-modes.md) — collapse agents and lower effort where the task tolerates it, never skip specs or the PRD stop to compensate

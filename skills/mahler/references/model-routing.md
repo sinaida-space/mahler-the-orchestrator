@@ -19,7 +19,7 @@ Does it require weighing tradeoffs the spec didn't resolve, non-obvious debuggin
 math/algorithm correctness, or architecture that affects other tasks?
   → YES → high
 
-Is this the Creative Director doing decomposition, fork-resolution, or spec-writing (judgment, not code)?
+Is this the Planner doing decomposition, fork-resolution, or spec-writing (judgment, not code)?
   → YES → high (never xhigh/ultrathink by default)
 ```
 
@@ -29,7 +29,7 @@ Is this the Creative Director doing decomposition, fork-resolution, or spec-writ
 |--------|---------|--------|
 | low | Verifiers (run a command, report), mechanical edits, renames, config | Zero judgment calls in execution |
 | medium | Default for implementers with a complete issue spec | Spec resolved the forks; agent follows steps |
-| high | Creative Director (always), or an implementer facing unresolved tradeoffs, hard debugging, math/algorithm correctness | Judgment calls remain at execution time |
+| high | Planner (always), or an implementer facing unresolved tradeoffs, hard debugging, math/algorithm correctness | Judgment calls remain at execution time |
 | xhigh/ultrathink | Never by default | Only if a high-effort agent failed twice and the verifier's diagnosis is "didn't think hard enough" |
 
 ## Routing Decision Tree
@@ -112,7 +112,7 @@ Is this complex (architecture, shaders, algorithms, hard debugging, system desig
 | Standard CRUD/API route from spec | medium | Spec + contract already fixed the shape |
 | CSS/HTML boilerplate, config, renaming | low | No judgment in execution |
 | Verifier running a DoD command | low | Execute and report, no interpretation |
-| Creative Director: decomposition, fork resolution, spec writing | high | This is where judgment lives — never route it to low |
+| Planner: decomposition, fork resolution, spec writing | high | This is where judgment lives — never route it to low |
 | Implementer, 2nd escalation retry | high | Verifier flagged reasoning gap, not a mechanical miss |
 
 ## Escalation Rules

@@ -39,9 +39,9 @@ Let's walk through a real project using `/mahler` from start to finish.
 
 ---
 
-## Phase 1: Creative Direction (Planner, on Opus)
+## Phase 1: Planning (Planner, on Opus)
 
-**The Creative Director synthesizes and returns:**
+**The Planner synthesizes and returns:**
 
 ```
 ## Vision
