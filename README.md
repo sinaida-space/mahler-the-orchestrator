@@ -4,6 +4,8 @@
 
 A multi-model Claude plugin that routes your creative and technical work to the AI model that fits each task.
 
+> Production mirror. Development and issue tracking run in a private development environment; releases are published here.
+
 ---
 
 ## Why Mahler?
