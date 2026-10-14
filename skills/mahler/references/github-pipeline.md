@@ -197,3 +197,14 @@ Any spec whose output is a synthesis of sources (guide, digest, summary, "extrac
 2. **DoD requires literal diff against source** — every claim must have a pointer (timecode, URL, file:line) verified against the source, not against another derivative
 3. **Verifier checks connective tissue** — words added during compression ("when", "always", "after", "most", "therefore") are where hallucinations appear
 4. **Derived-vs-derived doesn't count** — two consistent copies of the same paraphrase ≠ truth
+
+## Replan Rule (planner-level failure)
+
+Escalation above handles a failing implementer. A failing plan is handled differently:
+
+1. The Planner replans with the verifier digests and reports of every task that
+   already passed. Those tasks are not reopened or re-dispatched.
+2. Each replan re-checks dependencies: every new step's inputs must come from a closed
+   task or a tool.
+3. Replanning is capped at two rounds per objective. A third failure, or any replan that
+   changes the objective, goes to the user as a `blocked` issue with a diagnosis.

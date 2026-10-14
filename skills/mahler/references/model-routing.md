@@ -135,3 +135,16 @@ Don't spawn an agent for:
 - A question that can be answered from memory
 
 Handle these inline in the orchestrator to avoid agent overhead.
+
+## Runtime Routing Confidence
+
+Routing a runtime input to a specialist, a workflow, or a model tier (as opposed to
+routing a task at planning time) uses a classifier that returns a confidence score.
+
+- Confidence ≥ 0.8: dispatch to the chosen route.
+- Confidence < 0.8: dispatch to the explicit fallback route defined in the spec.
+- A fallback route is required in every runtime router. A router without one fails the
+  readiness test in [github-pipeline.md](github-pipeline.md).
+
+Cheap classification goes to the smallest adequate model (haiku); the expensive model runs
+only on routed work.
