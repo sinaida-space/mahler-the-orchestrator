@@ -1,6 +1,6 @@
 ---
 name: mahler
-description: Multi-model orchestrator that maximizes output quality at minimum token cost. Interrogates the user first, then uses the strongest model that actually spawns on this subscription (the chat's own model and effort) as planner to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
+description: Multi-model orchestrator that maximizes output quality at the most efficient and reasonable token cost. Interrogates the user first, then uses the strongest model that actually spawns on this subscription (the chat's own model and effort) as planner to decompose tasks and route them to Opus (complex), Sonnet (standard), or Haiku (mechanical). Use when the user types /mahler, says "orchestrate", "pipeline", "use mahler", or when facing a complex multi-step project that would benefit from task decomposition and model routing.
 ---
 
 # Mahler Orchestrator Skill

@@ -191,7 +191,7 @@ Use consistent tag names across all agent prompts in the session.
 - **Be explicit about actions.** "Change X" → implements. "Can you look at X" → suggests only.
 - **Add motivation.** "Never use ellipses" is weaker than "Never use ellipses — this is read aloud by TTS."
 - **Tell Claude what TO do, not what not to do.** "Write in flowing prose paragraphs" beats "don't use bullet points."
-- **Put long context at the top.** Data and documents above the query; query at the end (up to 30% quality improvement in long-context tasks).
+- **Put long context at the top.** Data and documents above the query; query at the end (this ordering helps in long-context tasks).
 - **Match prompt style to desired output.** Heavy markdown in the prompt → more markdown in output.
 - **3–5 diverse examples** for consistent output formatting — wrap in `<example>` tags.
 - **Prefer general instructions over prescriptive steps.** "Think thoroughly" often beats a hand-written step plan. Claude's reasoning usually exceeds what a human would prescribe.
