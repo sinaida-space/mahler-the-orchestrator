@@ -166,25 +166,6 @@ performance, iterate if needed.
 
 ---
 
-## Token Savings: Real Numbers
-
-**Without Mahler** (linear work on Opus):
-- Interrogation + planning: 500k tokens
-- Shader work: 800k tokens
-- Web app work: 600k tokens
-- Config/boilerplate: 200k tokens
-- **Total: ~2.1M tokens**
-
-**With Mahler** (routed work):
-- Interrogation (current model): 100k tokens
-- Planner direction (Opus): 150k tokens
-- Opus shader: 400k tokens
-- Sonnet web: 350k tokens
-- Haiku boilerplate: 50k tokens
-- **Total: ~1.05M tokens** (50% savings)
-
----
-
 ## Model Routing Reference
 
 **Haiku** (cheapest, use by default):
