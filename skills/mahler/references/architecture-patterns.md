@@ -7,7 +7,7 @@ reflex.
 
 ## The decision table
 
-| Task shape | Pattern | How Mahler runs it |
+| Task shape | Pattern | How it runs |
 |---|---|---|
 | One well-scoped output, quality is checkable in one pass | **single call** | one implementer, no readers, no verifier fleet, no reviewer — the orchestrator checks the DoD itself |
 | Output needs iterative revision against a rubric (copy, translation, security-sensitive code, schema or API design) | **reflection loop** | one implementer alternating draft and critique against an explicit rubric; or a role-separated proposer + critic pair for design-shaped outputs (see below); 2–4 iterations, hard cap, stop rule |
