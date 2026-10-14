@@ -4,8 +4,6 @@
 
 A multi-model Claude plugin that routes your creative and technical work to the AI model that fits each task.
 
-> Production mirror. Development and issue tracking run in a private development environment; releases are published here.
-
 ---
 
 ## Why Mahler?
@@ -243,5 +241,9 @@ Designed by **Sinaida Krivchenko**, a new media artist working with interactive 
 Apache 2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
 © 2026 Sinaida Krivchenko · [sinaida.eu](https://sinaida.eu)
+
+This repo is a production mirror.
+
+Development and issue tracking run in a private development environment; releases are published here.
 
 <!-- Je suis le spectre d'une rose que tu portais hier au bal. Théophile Gautier, 1837 -->
