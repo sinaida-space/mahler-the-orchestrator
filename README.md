@@ -2,7 +2,7 @@
 
 # Mahler: The Orchestrator
 
-A multi-model Claude plugin that routes your creative and technical work to the optimal AI model—saving tokens while maximizing quality.
+A multi-model Claude plugin that routes your creative and technical work to the AI model that fits each task.
 
 ---
 
@@ -22,13 +22,13 @@ You're on a limited token budget (Pro plan, anyone?). You have a complex project
 - Asking the right questions *first* (no wasted tokens on wrong directions)
 - Choosing the simplest architecture that fits, so a one-call task never becomes a three-agent pipeline
 - Breaking your project into subtasks, only as far as that architecture needs
-- Routing each task to the cheapest model that can handle it
+- Routing each task to the model it needs
 - Handling complex work (shaders, architecture) with Opus
 - Handling standard stuff (CSS, tests, docs) with Sonnet
 - Handling mechanical work (formatting, boilerplate) with Haiku
-- Orchestrating everything with the strongest model your plan offers (the chat's own model and effort) for creative direction
+- Orchestrating everything with the strongest model your plan offers (the chat's own model and effort) for planning
 
-Result: same quality, way fewer tokens burned.
+Result: each task runs on the model suited to it.
 
 ---
 
@@ -43,9 +43,9 @@ interactive choice dialogue:
 - How do we know it's done?
 - Are there decision forks to resolve?
 
-This phase prevents the biggest token waste: building the wrong thing.
+This phase keeps the work from starting in the wrong direction.
 
-### Phase 1: Creative Direction
+### Phase 1: Planning
 The Planner synthesizes your answers and produces:
 - A creative/technical vision
 - **An architecture pattern for the task** — a single model call, a reflection loop, a
@@ -120,7 +120,7 @@ PRD, with the entities and edges it will hold spelled out.
 
 - **`/mahler` command** → Launches the full 5-phase workflow
 - **`/mahler` skill** → Provides routing logic and interrogation templates
-- **Four agent roles** → Creative Director (strongest available model), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
+- **Four agent roles** → Planner (strongest available model), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
 - **Global CLAUDE.md** → Sets up context about your practice and working style
 
 ---
@@ -137,7 +137,7 @@ You want to create an interactive web app that displays real-time shader animati
 - What data does it visualize?
 - Should it respond to user input (mouse, touch, audio)?
 
-### Phase 1: Creative Direction
+### Phase 1: Planning
 *The Planner suggests:*
 - Visual direction: "Generative light patterns responding to input"
 - Architecture: multi-agent — the shader math, the React wrapper, and the animation loop
@@ -162,26 +162,7 @@ Three agents work in parallel:
 Run the build and tests against the merged result, review the full diff, test
 performance, iterate if needed.
 
-**Result:** A polished interactive app, optimized token spend, no wasted effort on wrong directions.
-
----
-
-## Token Savings: Real Numbers
-
-**Without Mahler** (linear work on Opus):
-- Interrogation + planning: 500k tokens
-- Shader work: 800k tokens
-- Web app work: 600k tokens
-- Config/boilerplate: 200k tokens
-- **Total: ~2.1M tokens**
-
-**With Mahler** (routed work):
-- Interrogation (current model): 100k tokens
-- Planner direction (Opus): 150k tokens
-- Opus shader: 400k tokens
-- Sonnet web: 350k tokens
-- Haiku boilerplate: 50k tokens
-- **Total: ~1.05M tokens** (50% savings)
+**Result:** A polished interactive app, with each part built on the model suited to it.
 
 ---
 
@@ -215,7 +196,7 @@ If you work with interactive projections, TouchDesigner, shaders, and web—this
 - Real-time performance constraints (60fps is non-negotiable)
 - The interplay between art and technology
 - When to prioritize visual polish vs. technical elegance
-- Your creative direction matters as much as the code
+- Your creative decisions matter as much as the code
 
 ---
 

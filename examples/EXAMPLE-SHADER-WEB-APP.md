@@ -39,9 +39,9 @@ Let's walk through a real project using `/mahler` from start to finish.
 
 ---
 
-## Phase 1: Creative Direction (Planner, on Opus)
+## Phase 1: Planning (Planner, on Opus)
 
-**The Creative Director synthesizes and returns:**
+**The Planner synthesizes and returns:**
 
 ```
 ## Vision
@@ -169,7 +169,7 @@ Deploy to Vercel. Done.
 - Shader (Opus): 180k tokens
 - Animation loop (Sonnet): 100k tokens
 - Config (Haiku): 20k tokens
-- **Total: 550k tokens** (39% savings)
+- **Total: 550k tokens**
 
 ---
 
@@ -177,8 +177,7 @@ Deploy to Vercel. Done.
 
 1. **Interrogation prevents false starts.** Knowing the shader exists saved decomposition time.
 2. **Parallel execution is fast.** React + Haiku boilerplate ran while Opus tackled shaders.
-3. **Routing saves tokens.** Haiku didn't need Opus intelligence for styling.
-4. **Escalation works.** When the shader hit a performance issue, escalating to Opus was the right call.
+3. **Escalation works.** When the shader hit a performance issue, escalating to Opus was the right call.
 
 ---
 

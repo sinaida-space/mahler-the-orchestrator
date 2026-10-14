@@ -1,13 +1,13 @@
 # Architecture Patterns — pick the shape before decomposing
 
-Phase 1 does this first, before any task breakdown. The Creative Director names the pattern the task
+Phase 1 does this first, before any task breakdown. The Planner names the pattern the task
 actually needs and the reason, and writes both into the PRD above the task table. Most
 tasks are not multi-agent work; saying so out loud is what stops the fleet spawning by
 reflex.
 
 ## The decision table
 
-| Task shape | Pattern | How Mahler runs it |
+| Task shape | Pattern | How it runs |
 |---|---|---|
 | One well-scoped output, quality is checkable in one pass | **single call** | one implementer, no readers, no verifier fleet, no reviewer — the orchestrator checks the DoD itself |
 | Output needs iterative revision against a rubric (copy, translation, security-sensitive code, schema or API design) | **reflection loop** | one implementer alternating draft and critique against an explicit rubric; or a role-separated proposer + critic pair for design-shaped outputs (see below); 2–4 iterations, hard cap, stop rule |
@@ -67,3 +67,39 @@ rule 5 is met. That task's spec:
 
 State this in the PRD as its own row, with the entities and edges it will hold, so the
 user approves building it.
+
+## Controls from the Ng playbook
+
+These rules are enforced in the PRD and the pipeline, not left to judgment.
+
+**Measured failure gate.** Before adding the next pattern, record the failure rate the
+current pattern produces on this task. If that rate is below 5%, the new pattern's
+complexity cost exceeds its benefit: keep the current pattern and fix the spec instead.
+
+**Step budget.** Every plan declares a maximum step count. A plan that exceeds its
+budget is rejected at PRD approval, not discovered mid-run.
+
+**Replan rule.** When a step fails, replan with the results of every step that already
+succeeded in context. Successful work is never discarded. Dependencies are validated
+before execution: every step input must be produced by an earlier step or a tool. A
+replan that changes the plan's objective, or a second failure after one replan, escalates
+to the user. Replanning is capped at two rounds.
+
+**Confidence routing.** Any runtime classifier (a router that picks a specialist,
+workflow, or model) returns a confidence score. Below 0.8 the input goes to the explicit
+fallback route, never to a guessed category.
+
+**Voting needs diversity.** Parallel voting only adds signal when the voters differ in
+prompt, rubric, or model. Identical copies are one judgment repeated, so they are not
+dispatched as a vote. Use distinct rubrics (for example correctness, security, performance)
+and an aggregator that selects among them.
+
+**Anti-patterns to refuse at PRD time:**
+- *Everything-agent:* one agent with every tool and a 50-page prompt. Split by responsibility.
+- *Echo chamber:* several agents with identical prompts and evidence. Keep one.
+- *Infinite loop:* a loop or replan with no stop rule or cap. Every loop has both.
+- *Phantom graph:* a graph store nobody queries. Rule 5 above applies.
+- *Conversational bottleneck:* an orchestrator that receives full worker transcripts.
+  Workers return typed digests (see [subagent-ops.md](subagent-ops.md)).
+- *Missing baseline:* an agentic pattern shipped without a zero-shot measurement to beat.
+- *Premature agent:* multi-agent for a task one well-prompted call handles.

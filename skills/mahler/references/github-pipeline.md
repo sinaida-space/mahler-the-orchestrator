@@ -5,7 +5,7 @@ Issue-first orchestration. Every task becomes a GitHub issue with a complete spe
 ## Issue Spec Template
 
 ```markdown
-**Model / Effort:** e.g. `sonnet / medium`. Both assigned by the Creative Director per model-routing.md —
+**Model / Effort:** e.g. `sonnet / medium`. Both assigned by the Planner per model-routing.md —
 independent axes, not one decision. Carried verbatim into the dispatch envelope; the
 implementer never picks its own effort.
 
@@ -186,7 +186,7 @@ Rules:
 
 ## Async Spec-Ahead
 
-While an implementer works, the Creative Director writes specs for the next tasks in the queue.
+While an implementer works, the Planner writes specs for the next tasks in the queue.
 Before dispatching a pre-written spec, do a one-line sanity check: does the actual diff from the previous task match what the pre-written spec assumed? If not, update the spec before dispatch.
 
 ## Grounding Gate (for synthesis tasks)
@@ -197,3 +197,14 @@ Any spec whose output is a synthesis of sources (guide, digest, summary, "extrac
 2. **DoD requires literal diff against source** — every claim must have a pointer (timecode, URL, file:line) verified against the source, not against another derivative
 3. **Verifier checks connective tissue** — words added during compression ("when", "always", "after", "most", "therefore") are where hallucinations appear
 4. **Derived-vs-derived doesn't count** — two consistent copies of the same paraphrase ≠ truth
+
+## Replan Rule (planner-level failure)
+
+Escalation above handles a failing implementer. A failing plan is handled differently:
+
+1. The Planner replans with the verifier digests and reports of every task that
+   already passed. Those tasks are not reopened or re-dispatched.
+2. Each replan re-checks dependencies: every new step's inputs must come from a closed
+   task or a tool.
+3. Replanning is capped at two rounds per objective. A third failure, or any replan that
+   changes the objective, goes to the user as a `blocked` issue with a diagnosis.
