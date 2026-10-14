@@ -91,7 +91,7 @@ The planner/opus/sonnet/haiku hierarchy is the *ideal*, not an assumption. Subsc
 
 | Ideal | If unavailable → | Adjustment |
 |-------|------------------|------------|
-| planner (creative direction) | the session's own model and effort; if rejected as unavailable: opus → sonnet at **high** → orchestrator does Phase 1 itself | The planner runs on what the chat is set to, never above it; aliases resolve to the newest release in each family |
+| planner (vision) | the session's own model and effort; if rejected as unavailable: opus → sonnet at **high** → orchestrator does Phase 1 itself | The planner runs on what the chat is set to, never above it; aliases resolve to the newest release in each family |
 | opus (complex/judgment work) | sonnet at **high** effort | Sonnet-high covers most opus-tier tasks; flag genuinely hard math/architecture to the user as elevated-risk |
 | sonnet (standard work) | opus at **medium** effort if that's what exists, else current model | Paying more per token but not more thinking |
 | haiku (mechanical work) | sonnet at **low** effort | Low effort keeps it from over-thinking mechanical work |

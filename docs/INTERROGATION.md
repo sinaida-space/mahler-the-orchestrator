@@ -28,7 +28,7 @@ By the end of Phase 0, you should know:
 - "Target devices? Desktop? Mobile? Projection hardware?"
 - "Size/scale: 1 user? 1000 users? Single file?"
 
-### Creative Direction (for art-adjacent work)
+### Vision (for art-adjacent work)
 - "What's the visual/conceptual feel?"
 - "Any references or inspiration?"
 - "Generative/procedural, or hand-crafted?"

@@ -182,7 +182,7 @@ Use consistent tag names across all agent prompts in the session.
 | Reader | `<investigate_before_answering>`, `<do_not_act_before_instructions>`, `<use_parallel_tool_calls>` |
 | Implementer | `<default_to_action>`, `<scope_discipline>`, `<no_hardcoding>`, `<use_parallel_tool_calls>`, `<context_continuity>`, self-check, reversibility gate |
 | Verifier | `<do_not_act_before_instructions>`, self-check |
-| Creative Director (Planner) | None of the above — it works from interrogation answers, not templated blocks |
+| Planner | None of the above — it works from interrogation answers, not templated blocks |
 
 ---
 

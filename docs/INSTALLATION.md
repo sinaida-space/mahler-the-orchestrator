@@ -87,7 +87,7 @@ The plugin includes:
 | Component | Purpose |
 |-----------|---------|
 | `/mahler` command | Launch the 4-phase orchestrator |
-| Creative Director agent | Brainstorm + decompose + route tasks |
+| Planner agent | Brainstorm + decompose + route tasks |
 | Developer agents | Execute on Opus/Sonnet/Haiku |
 | Routing skill | Decision tree for model assignment |
 | Reference docs | Interrogation protocol, routing guide |
