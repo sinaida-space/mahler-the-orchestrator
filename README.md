@@ -226,7 +226,7 @@ If Mahler doesn't work as expected or you have ideas for improvement, [open an i
 
 ## About
 
-Built by **Sinaida Krivchenko** — a new media artist working with interactive projections, TouchDesigner, shaders, and web applications.
+Designed by **Sinaida Krivchenko**, a new media artist working with interactive projections, TouchDesigner and AI agents.
 
 - 🌐 [Website](https://sinaida.eu/)
 - 📸 [Instagram](https://www.instagram.com/sin.ai.da/)
