@@ -19,7 +19,7 @@ The name is also a small tribute to my ballet life—I love the *Adagio* from Ma
 You're on a limited token budget (Pro plan, anyone?). You have a complex project: maybe a shader + a web app + some interactive TouchDesigner piece. If you throw everything at Claude's most powerful model, you burn tokens on tasks that don't need that power.
 
 **Mahler solves this by:**
-- Asking the right questions *first* (no wasted tokens on wrong directions)
+- Asking the right questions *first* (fewer tokens spent on wrong directions)
 - Choosing the simplest architecture that fits, so a one-call task never becomes a three-agent pipeline
 - Breaking your project into subtasks, only as far as that architecture needs
 - Routing each task to the model it needs
