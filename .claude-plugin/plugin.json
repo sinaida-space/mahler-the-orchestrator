@@ -1,7 +1,7 @@
 {
   "name": "mahler",
   "version": "1.0.0",
-  "description": "Multi-model orchestrator that routes tasks to the optimal Claude model for maximum value at the most efficient and reasonable token cost",
+  "description": "Multi-model orchestrator that asks about the project first, then routes each task to the Claude model tier that fits it, so the strongest model is spent only where it is needed",
   "author": {
     "name": "Sinaida Krivchenko",
     "url": "https://sinaida.eu"

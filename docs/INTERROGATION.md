@@ -2,7 +2,7 @@
 
 Before Mahler decomposes your project, it interrogates you. This is the most important phase.
 
-Why? Because every token spent here prevents 10x waste downstream.
+Why? A wrong direction caught here costs one question; caught after the build has started, it costs far more.
 
 ## The Goal
 

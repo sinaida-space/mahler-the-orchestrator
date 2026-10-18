@@ -152,7 +152,9 @@ Deploy to Vercel. Done.
 
 ---
 
-## Token Efficiency
+## Token Efficiency (rough estimate)
+
+The figures below are order-of-magnitude estimates for this example, written to show where routing is meant to save tokens. They are not a measurement, and a real project will land elsewhere.
 
 **Linear approach (all Opus):**
 - Planning: 200k tokens
