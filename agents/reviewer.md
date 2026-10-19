@@ -26,7 +26,7 @@ Run the project's own checks against merged HEAD, in order, and record each resu
 2. **Linter** — the repo's configured linter; no new warnings vs. the pipeline's start commit
 3. **Type check** — if it is separate from the build
 4. **Test suite** — the full run, not one task's DoD command
-5. **Prose check** — `python3 ~/.claude/skills/typography/scripts/typocheck.py <file>` on any changed deliverable text (README, docs, UI copy), where the repo carries prose
+5. **Prose check** — `python3 ~/.claude/skills/typography/scripts/typocheck.py <file>` on any changed deliverable text (README, docs, UI copy), where the repo carries prose and that script exists (it ships with the typography skill, github.com/sinaida-space/tardis_type); skip silently otherwise
 
 A failure here is the **top finding**: a task regressed something its own isolated DoD check could not see — task 5 passed alone and broke task 2. Report it, then run the judgment review below against whatever still builds.
 
