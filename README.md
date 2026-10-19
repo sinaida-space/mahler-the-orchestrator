@@ -121,7 +121,6 @@ PRD, with the entities and edges it will hold spelled out.
 - **`/mahler` command** → Launches the full 5-phase workflow
 - **`/mahler` skill** → Provides routing logic and interrogation templates
 - **Four agent roles** → Planner (strongest available model), Senior Developer (Opus), Developer (Sonnet), Assistant (Haiku)
-- **Global CLAUDE.md** → Sets up context about your practice and working style
 
 ---
 
@@ -205,6 +204,7 @@ If you work with interactive projections, TouchDesigner, shaders, and web—this
 - **Requires Claude Code** (the CLI or IDE extension)
 - **Model switching** needs Claude Pro/Max (or API). On Pro plan? Mahler degrades gracefully—same workflow, one model
 - **Planner model** is the chat's own model and effort, falling back to Opus → Sonnet → Mahler itself only if rejected
+- **Prose check** in review uses the [typography skill](https://github.com/sinaida-space/tardis_type) when it is installed, and is skipped without it
 - **Not a replacement for you** — Mahler routes work, but your creative decisions drive the direction
 
 ---
@@ -244,6 +244,6 @@ Apache 2.0, see [LICENSE](LICENSE) and [NOTICE](NOTICE).
 
 This repo is a production mirror.
 
-Development and issue tracking run in a private development environment; releases are published here.
+I develop in a private repo and publish releases here. Issues and ideas are welcome: I read them and carry them over. Pull requests stay open as suggestions; I carry good changes over by hand and then close the PR.
 
 <!-- Je suis le spectre d'une rose que tu portais hier au bal. Théophile Gautier, 1837 -->

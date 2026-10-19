@@ -5,8 +5,8 @@ Mahler is a tool for creative technologists and developers on limited token budg
 ## How to Contribute
 
 1. **Found a bug?** [Open an issue](https://github.com/sinaida-space/mahler-the-orchestrator/issues)
-2. **Have a feature idea?** [Open a discussion](https://github.com/sinaida-space/mahler-the-orchestrator/discussions)
-3. **Want to improve the docs?** Fork, edit, and submit a PR
+2. **Have a feature idea?** [Open an issue](https://github.com/sinaida-space/mahler-the-orchestrator/issues) too
+3. **Want to improve the docs or code?** A PR is welcome as a suggestion. I develop in a private repo, so I carry good changes over by hand and then close the PR
 
 ## Improving Mahler
 
