@@ -10,11 +10,11 @@ A multi-model Claude plugin that routes your creative and technical work to the 
 
 **Gustav Mahler** conducted orchestras by bringing out the best in each musician. He didn't ask the violins to play tuba parts. This plugin does the same thing with Claude's model ensemble.
 
-The name is also a small tribute to my ballet life—I love the *Adagio* from Mahler's 5th Symphony. That piece is about finding beauty in complexity, which feels right for this tool.
+The name is also a small tribute to my ballet life. I love the *Adagio* from Mahler's 5th Symphony. That piece is about finding beauty in complexity, which feels right for this tool.
 
 ---
 
-## The Problem It Solves
+## The problem it solves
 
 You're on a limited token budget (Pro plan, anyone?). You have a complex project: maybe a shader + a web app + some interactive TouchDesigner piece. If you throw everything at Claude's most powerful model, you burn tokens on tasks that don't need that power.
 
@@ -28,15 +28,14 @@ You're on a limited token budget (Pro plan, anyone?). You have a complex project
 - Handling mechanical work (formatting, boilerplate) with Haiku
 - Orchestrating everything with the strongest model your plan offers (the chat's own model and effort) for planning
 
-Result: each task runs on the model suited to it.
+Result: each task runs on the model suited to it.
 
 ---
 
-## How It Works: Five Phases
+## How it works: five phases
 
 ### Phase 0: Interrogation
-Before writing a single line of code, Mahler asks you pointed questions through an
-interactive choice dialogue:
+Before writing a single line of code, Mahler asks you pointed questions through an interactive choice dialogue:
 - What exactly are we building?
 - What's out of scope?
 - What constraints matter? (platform, performance, aesthetic)
@@ -48,19 +47,14 @@ This phase keeps the work from starting in the wrong direction.
 ### Phase 1: Planning
 The Planner synthesizes your answers and produces:
 - A creative/technical vision
-- **An architecture pattern for the task** — a single model call, a reflection loop, a
-  fixed chain, a multi-agent split, or a knowledge-graph-backed setup. Mahler picks the
-  cheapest one that fits and moves up only for a named reason. Most tasks are a single
-  call or a short chain, and saying so stops an agent fleet spawning by reflex.
+- **An architecture pattern for the task**: a single model call, a reflection loop, a fixed chain, a multi-agent split, or a knowledge-graph-backed setup. Mahler picks the cheapest one that fits and moves up only for a named reason. Most tasks are a single call or a short chain, and saying so stops an agent fleet spawning by reflex.
 - A decomposition plan, only as deep as the pattern needs
 - Model and effort routing for each task
 
 The Planner runs on the strongest model your subscription can spawn, picked at run time: Opus → Sonnet (high effort) → Mahler itself. On Pro that means Opus (currently Opus 5.5). Model aliases resolve to the newest release of each family, so a new Opus is picked up without any change to Mahler.
 
 ### Phase 2: PRD approval
-Mahler turns the plan into a short PRD — scope, architecture, task table, token
-estimate, execution mode — and stops. Nothing is built and no agent is spawned until
-you approve it.
+Mahler turns the plan into a short spec with scope, architecture, task table, token estimate and execution mode, and then stops. Nothing is built and no agent is spawned until you approve it.
 
 ### Phase 3: Execution
 Tasks run through a GitHub-issue-first pipeline, each on the right model:
@@ -68,21 +62,16 @@ Tasks run through a GitHub-issue-first pipeline, each on the right model:
 - **Sonnet** → Web features, tests, docs, API integration, standard implementation
 - **Haiku** → File operations, formatting, boilerplate, config changes
 
-Each agent gets a focused brief and has to earn its spawn overhead: work smaller than a
-spawn is done inline, adjacent tasks merge, and one verifier covers a group rather than
-one per task.
+Each agent gets a focused brief and has to earn its spawn overhead: work smaller than a spawn is done inline, adjacent tasks merge, and one verifier covers a group rather than one per task.
 
 ### Phase 4: Integration
-A fresh-context reviewer runs the project's own checks (build, lint, tests) against the
-merged result, then reads the full diff for cross-task conflicts. Findings become fix
-commits. Then Mahler verifies everything against your Phase 0 success criteria.
+A fresh-context reviewer runs the project's own checks (build, lint, tests) against the merged result, then reads the full diff for cross-task conflicts. Findings become fix commits. Then Mahler verifies everything against your Phase 0 success criteria. Mahler keeps a person in charge by design. You approve the plan before any agent starts, and the review checks the whole result against your own criteria.
 
 ---
 
 ## Choosing an architecture
 
-Mahler treats "how many agents" as the wrong question. Before decomposing anything, it
-names the shape the task actually needs:
+Mahler treats “how many agents” as the wrong question. Before decomposing anything, it names the shape the task actually needs:
 
 | Task shape | Pattern |
 |---|---|
@@ -92,19 +81,15 @@ names the shape the task actually needs:
 | Genuinely independent concerns | multi-agent, one per file-disjoint group |
 | The same facts are read across sessions or by several tasks | knowledge graph |
 
-It starts at the cheapest pattern and moves up only when a specific failure demands it.
+It starts at the cheapest pattern and moves up only when a specific failure demands it.
 
-**Knowledge graphs.** Mahler does not carry a graph itself, but when a job needs to
-remember entities and relationships across sessions, it can scaffold one as part of the
-plan: a typed JSON or SQLite store (not Neo4j, for the scale these projects hit), with
-provenance on every edge and additive writes. This lands as its own approved task in the
-PRD, with the entities and edges it will hold spelled out.
+**Knowledge graphs.** Mahler does not carry a graph itself, but when a job needs to remember entities and relationships across sessions, it can scaffold one as part of the plan: a typed JSON or SQLite store (not Neo4j, for the scale these projects hit), with provenance on every edge and additive writes. This lands as its own approved task in the plan, with the entities and edges it will hold spelled out.
 
 ---
 
 ## Installation
 
-### Quick Start
+### Quick start
 
 1. **Copy the plugin** to your Claude Code installation:
    ```bash
@@ -116,7 +101,7 @@ PRD, with the entities and edges it will hold spelled out.
 
 3. **Type `/mahler`** to launch the orchestrator
 
-### What You Get
+### What you get
 
 - **`/mahler` command** → Launches the full 5-phase workflow
 - **`/mahler` skill** → Provides routing logic and interrogation templates
@@ -124,9 +109,9 @@ PRD, with the entities and edges it will hold spelled out.
 
 ---
 
-## Example: Building an Interactive Shader Web App
+## Example: building an interactive shader web app
 
-You want to create an interactive web app that displays real-time shader animations. Here's how Mahler handles it:
+You want to create an interactive web app that displays real-time shader animations. Here's how Mahler handles it:
 
 ### Phase 0: Interrogation
 *Mahler asks:*
@@ -138,18 +123,16 @@ You want to create an interactive web app that displays real-time shader animati
 
 ### Phase 1: Planning
 *The Planner suggests:*
-- Visual direction: "Generative light patterns responding to input"
-- Architecture: multi-agent — the shader math, the React wrapper, and the animation loop
-  are genuinely independent work on different files
+- Visual direction: “Generative light patterns responding to input”
+- Architecture: multi-agent, since the shader math, the React wrapper, and the animation loop are genuinely independent work on different files
 - Decomposition:
   - Task 1 (Sonnet): React component + WebGL canvas setup
   - Task 2 (Opus): Fragment shader with math-heavy uniforms
   - Task 3 (Sonnet): Animation loop + performance optimization
-  - Task 4 (Haiku, inline): Config file + boilerplate — smaller than a spawn, folded into Task 1
+  - Task 4 (Haiku, inline): Config file + boilerplate, smaller than a spawn and folded into Task 1
 
 ### Phase 2: PRD approval
-Mahler shows the scope, the architecture call, the task table with token estimates, and
-waits for your yes.
+Mahler shows the scope, the architecture call, the task table with token estimates, and waits for your yes.
 
 ### Phase 3: Execution
 Three agents work in parallel:
@@ -158,14 +141,13 @@ Three agents work in parallel:
 - Sonnet does the animation loop
 
 ### Phase 4: Integration
-Run the build and tests against the merged result, review the full diff, test
-performance, iterate if needed.
+Run the build and tests against the merged result, review the full diff, test performance, iterate if needed.
 
-**Result:** A polished interactive app, with each part built on the model suited to it.
+**Result:** A polished interactive app, with each part built on the model suited to it.
 
 ---
 
-## Model Routing Reference
+## Model routing reference
 
 **Haiku** (cheapest, use by default):
 - File operations, formatting, boilerplate generation
@@ -189,9 +171,9 @@ performance, iterate if needed.
 
 ---
 
-## For Your Creative Practice
+## For your creative practice
 
-If you work with interactive projections, TouchDesigner, shaders, and web—this tool is built for you. Mahler understands:
+If you work with interactive projections, TouchDesigner, shaders, and web, this tool is built for you. Mahler understands:
 - Real-time performance constraints (60fps is non-negotiable)
 - The interplay between art and technology
 - When to prioritize visual polish vs. technical elegance
@@ -201,11 +183,11 @@ If you work with interactive projections, TouchDesigner, shaders, and web—this
 
 ## Limitations
 
-- **Requires Claude Code** (the CLI or IDE extension)
-- **Model switching** needs Claude Pro/Max (or API). On Pro plan? Mahler degrades gracefully—same workflow, one model
-- **Planner model** is the chat's own model and effort, falling back to Opus → Sonnet → Mahler itself only if rejected
-- **Prose check** in review uses the [typography skill](https://github.com/sinaida-space/tardis_type) when it is installed, and is skipped without it
-- **Not a replacement for you** — Mahler routes work, but your creative decisions drive the direction
+- Mahler requires Claude Code, the CLI or an IDE extension.
+- Model switching needs Claude Pro, Max or the API. With a single model, Mahler keeps the same workflow.
+- The Planner uses the chat's own model and effort, and falls back to Opus → Sonnet → Mahler itself only if that is rejected.
+- The prose check in review uses the [typography skill](https://github.com/sinaida-space/tardis_type) when it is installed, and is skipped without it.
+- Mahler routes the work, and your creative decisions drive the direction.
 
 ---
 
@@ -228,9 +210,9 @@ If Mahler doesn't work as expected or you have ideas for improvement, [open an i
 
 Designed by **Sinaida Krivchenko**, a new media artist working with interactive projections, TouchDesigner and AI agents.
 
-- 🌐 [Website](https://sinaida.eu/)
-- 📸 [Instagram](https://www.instagram.com/sin.ai.da/)
-- 🎵 A small tribute to Gustav Mahler and the ballet dancers who taught me to see rhythm in complexity
+- [Website](https://sinaida.eu/)
+- [Instagram](https://www.instagram.com/sin.ai.da/)
+- A small tribute to Gustav Mahler and the ballet dancers who taught me to see rhythm in complexity
 
 ---
 
